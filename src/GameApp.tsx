@@ -4,7 +4,7 @@ import Game from "./Game";
 import { GameInfo, GamePhase } from './GameTypes';
 import AudioContext from "./contexts/AudioContext";
 import autoCorrelate from "./libs/AutoCorrelate";
-import { maxHeaderSize } from 'http';
+// import { maxHeaderSize } from 'http';
 
 interface GameAppProps {
   onInit?(): void,
@@ -16,6 +16,9 @@ function GameApp(props: GameAppProps) {
   const [canvasHeight, setCanvasHeight] = useState(250);
   const [pitch, setPitch] = useState(50);
   const [position, setPosition] = useState(100);
+  
+  // TODO delete this - just to remove warnings
+  setPitch(50);
 
   const [currentPhase, setCurrentPhase] = useState(GamePhase.INIT);
   // const [pauseInfo, setPauseInfo] = useState<{paused: boolean, previous: GamePhase}>({ paused: false, previous: GamePhase.INIT});
@@ -142,7 +145,7 @@ function GameApp(props: GameAppProps) {
     if (source != null) {
       source!.connect(analyserNode);
     }
-  }, [source]);
+  }, [source, analyserNode]);
 
   return (
     

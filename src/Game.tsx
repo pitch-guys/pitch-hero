@@ -3,7 +3,7 @@ import { Component } from "react";
 import GameTimer from "./GameTimer";
 import { GameEntity, PipeEntity, PlayerEntity } from "./GameEntities";
 import { GameInfo, GamePhase } from "./GameTypes";
-import { Console } from "console";
+// import { Console } from "console";
 
 interface GameProps {
   width: number,
