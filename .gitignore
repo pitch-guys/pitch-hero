@@ -1,23 +1,23 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-pitch-hero/node_modules
-pitch-hero/.pnp
-pitch-hero/.pnp.js
+/node_modules
+/.pnp
+.pnp.js
 
 # testing
-pitch-hero/coverage
+/coverage
 
 # production
-pitch-hero/build
+/build
 
 # misc
-pitch-hero/.DS_Store
-pitch-hero/.env.local
-pitch-hero/.env.development.local
-pitch-hero/.env.test.local
-pitch-hero/.env.production.local
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-pitch-hero/npm-debug.log*
-pitch-hero/yarn-debug.log*
-pitch-hero/yarn-error.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
