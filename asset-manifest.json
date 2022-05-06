@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Pitch-Hero/static/css/main.073c9b0a.css",
-    "main.js": "/Pitch-Hero/static/js/main.1040c48c.js",
-    "static/js/787.ecb923d3.chunk.js": "/Pitch-Hero/static/js/787.ecb923d3.chunk.js",
-    "index.html": "/Pitch-Hero/index.html",
-    "main.073c9b0a.css.map": "/Pitch-Hero/static/css/main.073c9b0a.css.map",
-    "main.1040c48c.js.map": "/Pitch-Hero/static/js/main.1040c48c.js.map",
-    "787.ecb923d3.chunk.js.map": "/Pitch-Hero/static/js/787.ecb923d3.chunk.js.map"
+    "main.css": "/pitch-hero/static/css/main.ae4fead8.css",
+    "main.js": "/pitch-hero/static/js/main.df16933c.js",
+    "static/js/787.ecb923d3.chunk.js": "/pitch-hero/static/js/787.ecb923d3.chunk.js",
+    "index.html": "/pitch-hero/index.html",
+    "main.ae4fead8.css.map": "/pitch-hero/static/css/main.ae4fead8.css.map",
+    "main.df16933c.js.map": "/pitch-hero/static/js/main.df16933c.js.map",
+    "787.ecb923d3.chunk.js.map": "/pitch-hero/static/js/787.ecb923d3.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.073c9b0a.css",
-    "static/js/main.1040c48c.js"
+    "static/css/main.ae4fead8.css",
+    "static/js/main.df16933c.js"
   ]
 }
