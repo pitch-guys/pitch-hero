@@ -40,7 +40,7 @@ function GameApp(props: GameAppProps) {
       // let sym = noteStrings[note % 12];
       // let scl = Math.floor(note / 12) - 1;
       // let dtune = centsOffFromPitch(ac, note);
-      // setPitch(ac - 100);
+      setPitch(ac - 100);
       // setPitchNote(sym);
       // setPitchScale(scl);
       // setDetune(dtune);
