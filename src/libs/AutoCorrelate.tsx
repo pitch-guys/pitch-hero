@@ -1,4 +1,4 @@
-export default function autoCorrelate(buf: any, sampleRate: any) {
+export default function autoCorrelate(buf: any, sampleRate:any) {
     var SIZE = buf.length;
     var rms = 0;
   

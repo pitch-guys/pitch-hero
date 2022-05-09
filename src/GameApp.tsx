@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react';
 import "./Game.css";
 import Game from "./Game";
 import { GameInfo, GamePhase } from './GameTypes';
-import AudioContext from "./contexts/AudioContext";
+import AudioContextFunction from "./contexts/AudioContext";
 import autoCorrelate from "./libs/AutoCorrelate";
 // import { maxHeaderSize } from 'http';
+
+const AudioContext = new AudioContextFunction();
+
 
 interface GameAppProps {
   onInit?(): void,
@@ -16,10 +19,6 @@ function GameApp(props: GameAppProps) {
   const [canvasHeight, setCanvasHeight] = useState(250);
   const [pitch, setPitch] = useState(50);
   const [position, setPosition] = useState(100);
-  
-  // TODO delete this - just to remove warnings
-  setPitch(50);
-
   const [currentPhase, setCurrentPhase] = useState(GamePhase.INIT);
   // const [pauseInfo, setPauseInfo] = useState<{paused: boolean, previous: GamePhase}>({ paused: false, previous: GamePhase.INIT});
   const [requestedPhase, setRequestedPhase] = useState<GamePhase | null>(null);
