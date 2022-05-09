@@ -4,7 +4,7 @@
 name: Node.js CI
 
 env:
-  CI: true
+  CI: false
 
 on:
   push:
