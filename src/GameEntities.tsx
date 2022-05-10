@@ -46,9 +46,13 @@ export class PlayerEntity extends GameEntity {
     let blockX = (this.x / 100.0) * canvas.width;
     let blockY = (1 - this.y / 100.0) * canvas.height;
 
-    if (this.sprite != null) {
-      ctx.drawImage(this.sprite, blockX - size / 2, blockY - size / 2, size, size);
-    }
+    //if (this.sprite != null) {
+      //ctx.drawImage(this.sprite, blockX - size / 2, blockY - size / 2, size, size);
+    //}
+
+    ctx.fillStyle = "red";
+    ctx.beginPath();
+    ctx.fillRect(blockX - size / 2, blockY - size / 2, size, size);
   }
 }
 
