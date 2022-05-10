@@ -4,6 +4,7 @@ import GameTimer from "./GameTimer";
 import { GameEntity, PipeEntity, PlayerEntity } from "./GameEntities";
 import { GameInfo, GamePhase } from "./GameTypes";
 import Trumpetv3 from "./Trumpetv3.png";
+import Cookies from "universal-cookie";
 // import { Console } from "console";
 
 interface GameProps {
@@ -22,7 +23,11 @@ interface GameState {
   sinceLastPipe: number,
   info: GameInfo,
   prePausePhase: GamePhase,
-  playerSprite: HTMLImageElement | null;
+  playerSprite: HTMLImageElement | null,
+  cookies: Cookies,
+  highScore1: string,
+  highScore2: string,
+  highScore3: string
 }
 
 class Game extends Component<GameProps, GameState> {
@@ -30,6 +35,11 @@ class Game extends Component<GameProps, GameState> {
 
   constructor(props: any) {
     super(props);
+
+    const  cookies: Cookies  = new Cookies();
+    cookies.set("highScore1", "AAA,0", {});
+    cookies.set("highScore2", "AAA,0", {});
+    cookies.set("highScore3", "AAA,0", {});
 
     this.state = {
       phase: GamePhase.INIT,
@@ -39,7 +49,11 @@ class Game extends Component<GameProps, GameState> {
       sinceLastPipe: 0,
       info: this.initInfo(),
       prePausePhase: GamePhase.INIT,
-      playerSprite: null
+      playerSprite: null,
+      cookies: cookies,
+      highScore1: cookies.get('highScore1'),
+      highScore2: cookies.get('highScore2'),
+      highScore3: cookies.get('highScore3')
     }
 
     this.canvas = React.createRef();
@@ -139,6 +153,8 @@ class Game extends Component<GameProps, GameState> {
               || player.y < 0 || player.y > 100) {
           // there's at least one pipe we're in the danger zone of, we died :(
           this.transitionPhase(GamePhase.DEAD);
+          // checks whether new high score and adds it if it is
+          this.handleCookie(this.state.info.score)
           break;
         }
 
@@ -212,6 +228,45 @@ class Game extends Component<GameProps, GameState> {
     }
   }
 
+  //called whenever you die and updates high scores if applicable
+  handleCookie = (score: number) => {
+    const cookies: Cookies = this.state.cookies
+    const hs1String: string = cookies.get("highScore1");
+    const hs2String: string = cookies.get("highScore2");
+    const hs3String: string = cookies.get("highScore3");
+    const hs1Elem: string[] = hs1String.split(",");
+    const hs2Elem: string[] = hs2String.split(",");
+    const hs3Elem: string[] = hs3String.split(",");
+    const hs1: number = parseFloat(hs1Elem[1]);
+    const hs2: number = parseFloat(hs2Elem[1]);
+    const hs3: number = parseFloat(hs3Elem[1]);
+    if (score > hs3) {
+      let resp: string|null = window.prompt("You got a new highscore!! Enter your initials")
+      while (resp === null || resp.length !== 3) {
+        resp = window.prompt("You got a new highscore!! Enter your initials")
+      }
+      const newHighScore: string = resp + "," + score
+      if (score > hs2) {
+        cookies.set("highScore3", hs2String, {});
+        if (score > hs1) {
+          cookies.set("highScore2", hs1String, {});
+          cookies.set("highScore1", newHighScore, {});
+        } else {
+          cookies.set("highScore2", newHighScore, {});
+        }
+      } else {
+        cookies.set("highScore3", newHighScore, {});
+      }
+    }
+    this.setState(
+        {
+          highScore1: cookies.get('highScore1'),
+          highScore2: cookies.get('highScore2'),
+          highScore3: cookies.get('highScore3')
+        }
+    )
+  };
+
   render() {
     return (
       <div className="Game">
@@ -219,10 +274,13 @@ class Game extends Component<GameProps, GameState> {
           onTickCallback = { this.tickGame }
           postTickCallback = { this.drawGame }
         />
+        {/*<p>X position: { this.state.player?.x }</p>*/}
+        {/*<p>Y position: { this.state.player?.y }</p>*/}
         <p>Game Phase: { this.state.phase }</p>
-        <p>X position: { this.state.player?.x }</p>
-        <p>Y position: { this.state.player?.y }</p>
         <p>Score: { this.state.info.score }</p>
+        <p>HighScore1: {this.state.highScore1}</p>
+        <p>HighScore2: {this.state.highScore2}</p>
+        <p>HighScore3: {this.state.highScore3}</p>
         {/*<button onClick={ this.initGame }>Reset game</button>-->*/}
         <canvas className="gameCanvas" ref={ this.canvas }/>
       </div>
