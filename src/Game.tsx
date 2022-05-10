@@ -3,6 +3,7 @@ import { Component } from "react";
 import GameTimer from "./GameTimer";
 import { GameEntity, PipeEntity, PlayerEntity } from "./GameEntities";
 import { GameInfo, GamePhase } from "./GameTypes";
+import Trumpetv3 from "./Trumpetv3.png";
 // import { Console } from "console";
 
 interface GameProps {
@@ -56,7 +57,7 @@ class Game extends Component<GameProps, GameState> {
       })
       this.initGame() // start the game after the player sprite is loaded
     }
-    pSprite.src = "./Trumpetv3.png";
+    pSprite.src = Trumpetv3;
   }
 
   componentDidUpdate() {
