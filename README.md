@@ -8,6 +8,3 @@ Pitch Hero is a gamified pitch trainer intended to motivate users of all musical
     │   ├── public/
     │   └── src/
     └── reports/
-
-## Operational use case
-User is able to sing a certain pitch to control Bibby's height and attempt to survive going between the pipe's gaps. Users can see their score displayed in the corner.
