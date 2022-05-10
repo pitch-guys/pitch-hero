@@ -18,7 +18,9 @@ function GameApp(props: GameAppProps) {
   const [canvasWidth, setCanvasWidth] = useState(window.innerWidth * 0.8);
   const [canvasHeight, setCanvasHeight] = useState(250);
   const [pitch, setPitch] = useState(50);
-  const [position, setPosition] = useState(100);
+  const [position, setPosition] = useState(50);
+  const [loFreq, setLoFreq] = useState(100);
+  const [hiFreq, setHiFreq] = useState(400);
   const [currentPhase, setCurrentPhase] = useState(GamePhase.INIT);
   // const [pauseInfo, setPauseInfo] = useState<{paused: boolean, previous: GamePhase}>({ paused: false, previous: GamePhase.INIT});
   const [requestedPhase, setRequestedPhase] = useState<GamePhase | null>(null);
@@ -46,7 +48,7 @@ function GameApp(props: GameAppProps) {
       // setDetune(dtune);
       // setNotification(false);
       // console.log(note, sym, scl, dtune, ac);
-      updatePosition(ac, 100, 400, 100);
+      updatePosition(ac, loFreq, hiFreq, 100);
     }
   };
 
@@ -164,6 +166,8 @@ function GameApp(props: GameAppProps) {
           </button> 
         )}
         <span>{pitch}</span>
+        <span>Minimum Frequency: <input type="number" min={ 0 } value={ loFreq } onChange={ (event) => setLoFreq(event.target.valueAsNumber) }/></span>
+        <span>Maximum Frequency: <input type="number" min={ 0 } value={ hiFreq } onChange={ (event) => setHiFreq(event.target.valueAsNumber) }/></span>
         <Game 
         width={ canvasWidth }
         height={ canvasHeight }
