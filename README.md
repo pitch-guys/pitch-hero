@@ -6,6 +6,11 @@ Pitch Hero is a gamified pitch trainer intended to motivate users of all musical
     .
     ├── public/: Public-facing assets for the project
     ├── src/: Project source files; Typescript, CSS, HTML
+    |   ├── __tests__/: Unit test suites
+    |   ├── _data/: Hardcoded sample data
+    |   ├── contexts/: Context objects
+    |   ├── libs/: Common objects
+    |   └── types/: Common types
     └── reports/: Weekly status reports
 
 ## Operational use case
