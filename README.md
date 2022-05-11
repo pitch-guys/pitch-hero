@@ -10,3 +10,19 @@ Pitch Hero is a gamified pitch trainer intended to motivate users of all musical
 
 ## Operational use case
 User is able to sing a certain pitch to control Bibby's height and attempt to survive going between the pipe's gaps. Users can see their score displayed in the corner.
+
+## Building and Testing
+To contribute to this project, clone the repository.
+
+Then, to build and run the project, run the following commands in the root folder:
+```
+    npm install
+    npm start
+```
+
+This will start the React development server, which hosts the web app.
+
+To run unit tests, run
+```
+    npm test
+```
