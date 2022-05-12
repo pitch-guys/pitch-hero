@@ -155,14 +155,14 @@ function GameApp(props: GameAppProps) {
           <button
             onClick={start}
           >
-            Start
+            Start microphone
           </button>
         ) : (
           <button
             className="bg-red-800 text-white w-20 h-20 rounded-full shadow-xl transition-all"
             onClick={stop}
           >
-            Stop
+            Stop microphone
           </button> 
         )}
         <span>{pitch}</span>
@@ -176,7 +176,7 @@ function GameApp(props: GameAppProps) {
         onPhaseChangeCallback={ onPhaseChanged }
       />
       <input type="number" min={ 0 } max={ 100 } value={ pitch } onChange={ updatePitch }/>
-      <button onClick={ onResetClicked }>Reset game</button>
+      <button onClick={ onResetClicked }> {currentPhase === GamePhase.READY ? "Start" : "Reset"} game</button>
       <button onClick={ onPauseClicked }> {currentPhase === GamePhase.PAUSED? "Unpause" : "Pause"} game</button>
     </div>
   );
