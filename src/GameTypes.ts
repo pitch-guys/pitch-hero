@@ -1,4 +1,6 @@
 export enum GamePhase {
+  LOAD = "LOAD",
+  READY = "READY",
   INIT = "INIT",
   ALIVE = "ALIVE",
   DEAD = "DEAD",

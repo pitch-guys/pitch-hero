@@ -42,13 +42,13 @@ class Game extends Component<GameProps, GameState> {
     cookies.set("highScore3", "AAA,0", {});
 
     this.state = {
-      phase: GamePhase.INIT,
+      phase: GamePhase.LOAD,
       entities: [],
       nextEID: 0,
       player: null,
       sinceLastPipe: 0,
       info: this.initInfo(),
-      prePausePhase: GamePhase.INIT,
+      prePausePhase: GamePhase.LOAD,
       playerSprite: null,
       cookies: cookies,
       highScore1: cookies.get('highScore1'),
@@ -69,7 +69,8 @@ class Game extends Component<GameProps, GameState> {
       this.setState({
         playerSprite: pSprite
       })
-      this.initGame() // start the game after the player sprite is loaded
+      // this.initGame() // start the game after the player sprite is loaded
+      this.transitionPhase(GamePhase.READY);
     }
     pSprite.src = Trumpetv3;
   }
@@ -121,6 +122,10 @@ class Game extends Component<GameProps, GameState> {
     let entities: GameEntity[];
     let EID = this.state.nextEID;
     switch(this.state.phase) {
+      case GamePhase.LOAD:
+        break;
+      case GamePhase.READY:
+        break;
       case GamePhase.INIT:
         // start updating game on the next frame
         player = new PlayerEntity(EID++, this.getInputFunc, this.state.playerSprite);
