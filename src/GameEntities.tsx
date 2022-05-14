@@ -1,3 +1,5 @@
+import {GameDifficulty} from "./GameTypes";
+
 export class GameEntity {
   name: string;
   x: number;
@@ -38,7 +40,10 @@ export class PlayerEntity extends GameEntity {
   }
 
   tick(dt: number) {
-    this.setY(this.getInputFunc());
+    // this.setY(this.getInputFunc());
+    let target = this.getInputFunc();
+    let dir = (target - this.y) * 0.1 * Math.exp(dt);
+    this.setY(this.y + dir);
   }
 
   draw(dt: number, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
@@ -76,6 +81,14 @@ export class PipeEntity extends GameEntity {
     let y = (1 - this.y / 100.0) * canvas.height;
     let width = (this.width / 100.0) * canvas.width;
     let gap = (this.gap / 100.0) * canvas.height;
+
+    if (GameDifficulty.EASY) {
+      gap = (this.gap / 100.0) * canvas.height + 50;
+    } else if (GameDifficulty.NORMAL) {
+      gap = (this.gap / 100.0) * canvas.height;
+    } else if (GameDifficulty.HARD) {
+      gap = (this.gap / 100.0) * canvas.height - 21;
+    }
 
     ctx.fillStyle = "green";
 

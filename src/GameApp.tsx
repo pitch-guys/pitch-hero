@@ -1,13 +1,12 @@
-import { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import "./Game.css";
 import Game from "./Game";
-import { GameInfo, GamePhase } from './GameTypes';
+import {GameDifficulty, GameInfo, GamePhase} from './GameTypes';
 import AudioContextFunction from "./contexts/AudioContext";
 import autoCorrelate from "./libs/AutoCorrelate";
 // import { maxHeaderSize } from 'http';
 
 const AudioContext = new AudioContextFunction();
-
 
 interface GameAppProps {
   onInit?(): void,
@@ -19,6 +18,7 @@ function GameApp(props: GameAppProps) {
   const [canvasHeight, setCanvasHeight] = useState(250);
   const [pitch, setPitch] = useState(50);
   const [position, setPosition] = useState(50);
+  const [manualMode, setManualMode] = useState(false);
   const [loFreq, setLoFreq] = useState(100);
   const [hiFreq, setHiFreq] = useState(400);
   const [currentPhase, setCurrentPhase] = useState(GamePhase.INIT);
@@ -33,6 +33,7 @@ function GameApp(props: GameAppProps) {
   // const onInputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   setGameInput(parseInt(e.target.value));
   // }
+  const [difficulty, setDifficulty] = useState(GameDifficulty.NORMAL);
 
   const updatePitch = (time: any) => {
     analyserNode.getFloatTimeDomainData(buf);
@@ -52,22 +53,37 @@ function GameApp(props: GameAppProps) {
     }
   };
 
+  const onUpdateManualInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // updatePosition(e.target.value)
+    if (manualMode) {
+      setPosition(parseInt(e.target.value));
+    }
+  }
+
+  const onChangeManualMode = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setManualMode(!manualMode);
+  }
+
   // Updates the position of Bibby (to be passed to Game) based on a given input frequency. Takes
   // in min and max frequencies where input frequencies outside of this range will simply be
   // mapped to the top and bottom positions. Scales frequencies within the range to span the whole
   // height.
   const updatePosition = (freq: number, minFreq: number, maxFreq: number, height: number) => {
-    let pos: number = (freq - minFreq) / (maxFreq - minFreq) * height;  // scale freq within range
-    if (pos < 0) {  // keep pos within box if going out of bounds
-      pos = 0;
-    } else if (pos > height) {
-      pos = height
+    if (!manualMode) {
+      // in manual mode, don't change position due to microphone
+      let pos: number = (freq - minFreq) / (maxFreq - minFreq) * height;  // scale freq within range
+      if (pos < 0) {  // keep pos within box if going out of bounds
+        pos = 0;
+      } else if (pos > height) {
+        pos = height
+      }
+      setPosition(pos);
     }
-    setPosition(pos);
   }
 
   setInterval(updatePitch, 1);
 
+  // starts the mic
   const start = async () => {
     const input = await getMicInput();
 
@@ -98,7 +114,7 @@ function GameApp(props: GameAppProps) {
 
   const onPhaseChanged = (lastPhase: GamePhase, newPhase: GamePhase, info: GameInfo) => {
     console.log(`Transitioned from ${lastPhase} to ${newPhase}`);
-    
+
     if (newPhase === requestedPhase) {
       // our request has been answered
       setRequestedPhase(null);
@@ -133,6 +149,18 @@ function GameApp(props: GameAppProps) {
     }
   }
 
+  const onEasyClicked = () => {
+    setDifficulty(GameDifficulty.EASY);
+  }
+
+  const onNormalClicked = () => {
+    setDifficulty(GameDifficulty.NORMAL);
+  }
+
+  const onHardClicked = () => {
+    setDifficulty(GameDifficulty.HARD);
+  }
+
   useEffect(() => {
     const handleResize = () => {
       setCanvasHeight(250);
@@ -149,36 +177,47 @@ function GameApp(props: GameAppProps) {
   }, [source, analyserNode]);
 
   return (
-    
-    <div className="Game-App">
-      {!started ? (
-          <button
-            onClick={start}
-          >
-            Start microphone
-          </button>
+
+      <div className="Game-App">
+        {!started ? (
+            <button
+                onClick={start}
+            >
+              Start microphone
+            </button>
         ) : (
-          <button
-            className="bg-red-800 text-white w-20 h-20 rounded-full shadow-xl transition-all"
-            onClick={stop}
-          >
-            Stop microphone
-          </button> 
+            <button
+                className="bg-red-800 text-white w-20 h-20 rounded-full shadow-xl transition-all"
+                onClick={stop}
+            >
+              Stop microphone
+            </button>
         )}
         <span>{pitch}</span>
         <span>Minimum Frequency: <input type="number" min={ 0 } value={ loFreq } onChange={ (event) => setLoFreq(event.target.valueAsNumber) }/></span>
         <span>Maximum Frequency: <input type="number" min={ 0 } value={ hiFreq } onChange={ (event) => setHiFreq(event.target.valueAsNumber) }/></span>
-        <Game 
-        width={ canvasWidth }
-        height={ canvasHeight }
-        input={ position }
-        requestedPhase={ requestedPhase }
-        onPhaseChangeCallback={ onPhaseChanged }
-      />
-      <input type="number" min={ 0 } max={ 100 } value={ pitch } onChange={ updatePitch }/>
-      <button onClick={ onResetClicked }> {currentPhase === GamePhase.READY ? "Start" : "Reset"} game</button>
-      <button onClick={ onPauseClicked }> {currentPhase === GamePhase.PAUSED? "Unpause" : "Pause"} game</button>
-    </div>
+        <Game
+            width={ canvasWidth }
+            height={ canvasHeight }
+            input={ position }
+            requestedPhase={ requestedPhase }
+            onPhaseChangeCallback={ onPhaseChanged }
+        />
+        <input type="number" min={ 0 } max={ 100 } value={ position } onChange={ onUpdateManualInput }/>
+        <label>
+          Manual input
+          <input
+              type="checkbox"
+              value={ manualMode.toString() }
+              onChange={ onChangeManualMode }
+          />
+        </label>
+        <button onClick={ onResetClicked }> {currentPhase === GamePhase.READY ? "Start" : "Reset"} game</button>
+        <button onClick={ onPauseClicked }> {currentPhase === GamePhase.PAUSED ? "Unpause" : "Pause"} game</button>
+        <button onClick={ onEasyClicked }>Easy</button>
+        <button onClick={ onNormalClicked }>Normal</button>
+        <button onClick={ onHardClicked }>Hard</button>
+      </div>
   );
 }
 
