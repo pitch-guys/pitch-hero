@@ -11,8 +11,8 @@
 ## Directory Layout
   ├── public/: Public-facing assets for the project<br>
   ├── src/: Project source files; Typescript, CSS, HTML<br>
-  |   ├── __tests__/: Unit test suites<br>  
-  |   ├── _data/: Hardcoded sample data<br>
+  |   ├── tests/: Unit test suites<br>
+  |   ├── data/: Hardcoded sample data<br>
   |   ├── contexts/: Context objects<br>
   |   ├── libs/: Common objects<br>
   |   └── types/: Common types<br>
