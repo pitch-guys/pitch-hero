@@ -26,4 +26,6 @@
   └── reports/: Weekly status reports<br>
 ## Building
 ## Testing
+In order to run the test suite for the system, all you you have to do is run "npm test" in the terminal, and Jest will automatically run all of the test files which end with test.ts.
+In order to create a new test, ...
 ## Release
