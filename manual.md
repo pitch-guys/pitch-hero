@@ -9,7 +9,14 @@
 ## Source Code
   All source code can be found in the /src/ folder.
 ## Directory Layout
-  /public/ contains various image icons for the game. /reports/contains the various weekly progress reports. /src/ contains the source code. The root directory contains the various git and build.package files.
+  ├── public/: Public-facing assets for the project<br>
+  ├── src/: Project source files; Typescript, CSS, HTML<br>
+  |   ├── __tests__/: Unit test suites<br>  
+  |   ├── _data/: Hardcoded sample data<br>
+  |   ├── contexts/: Context objects<br>
+  |   ├── libs/: Common objects<br>
+  |   └── types/: Common types<br>
+  └── reports/: Weekly status reports<br>
 ## Building
 ## Testing
 ## Release
