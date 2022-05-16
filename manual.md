@@ -6,6 +6,7 @@
 
 # Developer Manual
 ## Source Code
+
 ## Directory Layout
 ## Building
 ## Testing
