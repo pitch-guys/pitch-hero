@@ -10,9 +10,13 @@
   Please follow the issue template below:
   
   Title: [relevant name]
+  
   Bug description (10 words or less):
+  
   Steps to reproduce:
+  
   Browser used:
+  
   
 ## Known bugs
   Some computers might cause malformed pipes to spawn. <br>
