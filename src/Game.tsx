@@ -7,40 +7,80 @@ import Trumpetv3 from "./Trumpetv3.png";
 import Cookies from "universal-cookie";
 // import { Console } from "console";
 
+// Game properties object, contains information passed down from a parent component.
 interface GameProps {
+  // Desired canvas width in pixels
   width: number,
+
+  // Desired canvas height in pixels
   height: number,
+
+  // Desired player height, between 0 and 100
   input: number,
-  requestedPhase: GamePhase | null,    // externally requested state change
+
+  // Desired game phase to transition to, externally requested and possibly not acted upon
+  requestedPhase: GamePhase | null,
+
+  // Callback invoked on changing game phase
+  // lastPhase: Phase before change
+  // newPhase: Phase after change
+  // info: Information about externally-relevant game state like score
   onPhaseChangeCallback?(lastPhase: GamePhase, newPhase: GamePhase, info: GameInfo): void
 }
 
+// Game state object, representing current game state
 interface GameState {
+  // Current game phase
   phase: GamePhase,
+
+  // List of all entities to be updated
   entities: GameEntity[],
+
+  // Next unused entity ID
   nextEID: number,
+
+  // Player entity object
   player: PlayerEntity | null
+
+  // Time since the last pipe was spawned in seconds
   sinceLastPipe: number,
+
+  // Information about the current game like score
   info: GameInfo,
+
+  // Phase the game was in before a pause, if any
   prePausePhase: GamePhase,
+
+  // Image to use as the player sprite
   playerSprite: HTMLImageElement | null,
+
+  // Cookies object
   cookies: Cookies,
+
+  // Top 3 high scores
   highScore1: string,
   highScore2: string,
   highScore3: string
 }
 
+
+// Game component, encapsulating a canvas and performing operations on game entities based on state machine logic.
+// Exposes interfaces for external modification and viewing of game state by other components.
 class Game extends Component<GameProps, GameState> {
+
+  // Canvas element reference
   canvas: React.RefObject<HTMLCanvasElement>;
 
-  constructor(props: any) {
+  constructor(props: GameProps) {
     super(props);
 
+    // Initialize cookies, set initial high scores
     const  cookies: Cookies  = new Cookies();
     cookies.set("highScore1", "AAA,0", {});
     cookies.set("highScore2", "AAA,0", {});
     cookies.set("highScore3", "AAA,0", {});
 
+    // Initialize state
     this.state = {
       phase: GamePhase.LOAD,
       entities: [],
@@ -56,25 +96,31 @@ class Game extends Component<GameProps, GameState> {
       highScore3: cookies.get('highScore3')
     }
 
+    // Initialize canvas
     this.canvas = React.createRef();
   }
 
+  // Called when the component first mounts on the page
   componentDidMount() {
+    // Fetch assets
     this.fetchAndSaveImages()
   }
 
+  // Fetches and saves assets like player sprites, transitions game to the Ready state on loading.
   fetchAndSaveImages() {
     let pSprite: HTMLImageElement = new Image();
     pSprite.onload = () => {
+      // Called once the sprite at the given source is loaded
       this.setState({
         playerSprite: pSprite
       })
-      // this.initGame() // start the game after the player sprite is loaded
+      // Ready the game after the player sprite is loaded
       this.transitionPhase(GamePhase.READY);
     }
     pSprite.src = Trumpetv3;
   }
 
+  // Called once every time the component is updated externally
   componentDidUpdate() {
     if (this.props.requestedPhase !== this.state.phase) {
       // someone wants us to externally change the game phase, try to do so if possible
@@ -84,22 +130,28 @@ class Game extends Component<GameProps, GameState> {
           this.transitionPhase(GamePhase.INIT);
           break;
         case GamePhase.PAUSED:
+          // transition to pause, but save the previous state so it can be returned
           this.setState({ prePausePhase: this.state.phase });
           this.transitionPhase(GamePhase.PAUSED);
           break;
         case GamePhase.UNPAUSED:
-          this.transitionPhase(GamePhase.UNPAUSED);
+          // only unpause if we're currently paused
+          if (this.state.phase === GamePhase.PAUSED) {
+            this.transitionPhase(GamePhase.UNPAUSED);
+          }
           break;
       }
     }
   }
 
+  // Returns an initialized GameInfo object
   initInfo = () => {
     return {
       score: 0
     };
   }
 
+  // Returns the current input value passed in by a parent component
   getInputFunc = () => this.props.input;
 
   // game startup/reset; run once when game starts up/resets
@@ -107,6 +159,7 @@ class Game extends Component<GameProps, GameState> {
     this.transitionPhase(GamePhase.INIT);
   }
 
+  // Transitions the current phase to the next phase, invoking the onPhaseChange callback
   transitionPhase = (nextPhase: GamePhase) => {
     let lastPhase = this.state.phase;
 
@@ -115,19 +168,23 @@ class Game extends Component<GameProps, GameState> {
     });
   }
 
-  // game tick, called once every frame
+  // Ticks game logic, called every frame by the GameTimer
   // dt: time in seconds since last frame
   tickGame = (dt : number) => {
     let player: PlayerEntity;
     let entities: GameEntity[];
     let EID = this.state.nextEID;
+
     switch(this.state.phase) {
       case GamePhase.LOAD:
+        // do nothing
         break;
       case GamePhase.READY:
+        // do nothing
         break;
       case GamePhase.INIT:
-        // start updating game on the next frame
+        // initialize the game
+        // set up entities to contain a new player
         player = new PlayerEntity(EID++, this.getInputFunc, this.state.playerSprite);
         entities = [];
         entities.push(player);
@@ -139,25 +196,23 @@ class Game extends Component<GameProps, GameState> {
           sinceLastPipe: Infinity,
           info: this.initInfo()
         });
+
+        // start updating on the next frame
         this.transitionPhase(GamePhase.ALIVE);
         break;
 
       case GamePhase.ALIVE:
+        // player is currently alive, tick all entities
+
         // check to make sure the player hasn't died
         player = this.state.player!;  // player is definitely not null
         entities = this.state.entities;
-
-        let canvas = this.canvas.current;
-        if (canvas) {
-          canvas.width = this.props.width;
-          canvas.height = this.props.height;
-        }
-
         if (this.state.entities.some((e: GameEntity) => e.name === "pipe"
-                                                        && (e as PipeEntity).inDangerZone(player.x, player.y, canvas!))
+                                                        && (e as PipeEntity).inDangerZone(player.x, player.y))
               || player.y < 0 || player.y > 100) {
           // there's at least one pipe we're in the danger zone of, we died :(
           this.transitionPhase(GamePhase.DEAD);
+
           // checks whether new high score and adds it if it is
           this.handleCookie(this.state.info.score)
           break;
@@ -166,6 +221,7 @@ class Game extends Component<GameProps, GameState> {
         // check to see how long it's been since we spawned a pipe; if it's been 3 seconds, spawn a new pipe
         let sinceLastPipe = this.state.sinceLastPipe;
         if (sinceLastPipe > 3) {
+          // Generate a new pipe past the right edge of the screen with a random height between 20 and 80
           this.state.entities.push(new PipeEntity(EID++, Math.random() * 60 + 20, 5, 20));
           sinceLastPipe = 0;
         }
@@ -216,16 +272,19 @@ class Game extends Component<GameProps, GameState> {
   // note: DON'T do any setState in here
   drawGame = (dt: number) => {
     let canvas = this.canvas.current;
+
+    // get canvas context
     let ctx = canvas?.getContext("2d");
     if (canvas && ctx) {
       canvas.width = this.props.width;
       canvas.height = this.props.height;
 
-      // background
+      // Draw a solid blue background
       ctx.fillStyle = "blue";
       ctx.beginPath();
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+      // draw every entity
       this.state.entities.map((e: GameEntity) => {
         e.draw(dt, canvas!, ctx!);
         return e;
@@ -246,8 +305,10 @@ class Game extends Component<GameProps, GameState> {
     const hs2: number = parseFloat(hs2Elem[1]);
     const hs3: number = parseFloat(hs3Elem[1]);
     if (score > hs3) {
+      // score is at least greater than the lowest high score
       let resp: string|null = window.prompt("You got a new highscore!! Enter your initials")
       while (resp === null || resp.length !== 3) {
+        // retry prompting until the player enters a correct name
         resp = window.prompt("You got a new highscore!! Enter your initials")
       }
       const newHighScore: string = resp + "," + score

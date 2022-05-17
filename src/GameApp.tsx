@@ -80,7 +80,7 @@ function GameApp(props: GameAppProps) {
     }
   }
 
-  setInterval(updatePitch, 1);
+  setInterval(updatePitch, 200);
 
   const start = async () => {
     const input = await getMicInput();
