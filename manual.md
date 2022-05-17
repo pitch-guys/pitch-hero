@@ -4,7 +4,7 @@
 ## Installing and running.
   Pitch Hero is a browser game and no additional installation is required. The game can be found and run at https://pitch-guys.github.io/pitch-hero/.
 ## Playing the Game
-  Press START and allow microphone access to start the game. Changing the pitch of your voice will move Bibby up and down, allowing you to navigate through the pipe gaps safely. The game can be paused or reset and any time should the user need a break. When Bibby hits an obstacle and loses, it prompts the user for a username to represent the high score.
+  Press START and allow microphone access to start the game. Changing the pitch of your voice will move the trumpet up and down, allowing you to navigate through the pipe gaps safely. The game can be paused or reset any time should the user need a break. When the trumpet hits an obstacle and loses, it prompts the user for a username to represent the high score.
 ## How to report a bug
   If you find a bug with the application, you can report this bug as an issue in the "Issues" tab on our github repository!
 ## Known bugs
