@@ -34,8 +34,8 @@
 ## Building and releasing the software
   To build and release an updated version of all system components, run the command "npm run deploy". This will build an optimized version of the project and then commit this to the github pages where the application is hosted online.
 ## Testing and creating tests
-  In order to run the test suite for the system, all you you have to do is run "npm test" in the terminal, and Jest will automatically run all of the test files which end with test.tsx.
-  When creating new tests, if the tests are for the general app, they can be put as a new test inside of test.tsx.
+  In order to run the test suite for the system, run "npm test" in the terminal, and Jest will automatically run all of the test files which end with test.tsx.
+  When creating new tests, if the tests are for the general app, they can be put as a new test inside of test.tsx. Should it need to reference external hardcoded data, the data should be placed in the \_data\_/ folder and exported from there.
   
   Otherwise, if the tests are for a specific implementation, navigate to the \_\_tests\_\_/ folder and create a new folder or add a new test.tsx file.
   e.g. basic-test.tsx
