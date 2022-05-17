@@ -20,7 +20,12 @@
   
 ## Known bugs
   Some computers might cause malformed pipes to spawn. <br>
-  The dialog box to enter a player's initials might not disappear after pressing enter (might need to press multiple times or refresh the app).
+  The dialog box to enter a player's initials might not disappear after pressing enter (might need to press multiple times or refresh the app). <br>
+  High scores aren't updated. <br>
+  The moment a player beats their high score, the game ends and stays frozen. <br>
+  When entering initials (username) for a high score, only 3 character initials are accepted. Anything other than 3 character length initials causes the input box
+  to prompt the user indefinitely for their initials.
+  
 
 # Developer Manual
 ## Source Code
