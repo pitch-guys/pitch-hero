@@ -8,7 +8,7 @@
 ## How to report a bug
   If you find a bug with the application, you can report this bug as an issue in the "Issues" tab on our github repository!
 ## Known bugs
-  Some computers might cause malformed pipes to spawn. 
+  Some computers might cause malformed pipes to spawn. <br>
   The dialog box to enter a player's initials might not disappear after pressing enter (might need to press multiple times or refresh the app).
 
   
