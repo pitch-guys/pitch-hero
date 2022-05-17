@@ -3,7 +3,8 @@ import { Component } from "react";
 import GameTimer from "./GameTimer";
 import { GameEntity, PipeEntity, PlayerEntity } from "./GameEntities";
 import { GameInfo, GamePhase } from "./GameTypes";
-import Trumpetv3 from "./Trumpetv3.png";
+import Trumpet from "./Trumpetv3.png";
+import Background from "./Backgroundv4.png";
 import Cookies from "universal-cookie";
 // import { Console } from "console";
 
@@ -53,7 +54,10 @@ interface GameState {
 
   // Image to use as the player sprite
   playerSprite: HTMLImageElement | null,
-
+  
+  // Image to use as the background sprite
+  backgroundSprite: HTMLImageElement | null,
+  
   // Cookies object
   cookies: Cookies,
 
@@ -90,6 +94,7 @@ class Game extends Component<GameProps, GameState> {
       info: this.initInfo(),
       prePausePhase: GamePhase.LOAD,
       playerSprite: null,
+      backgroundSprite: null,
       cookies: cookies,
       highScore1: cookies.get('highScore1'),
       highScore2: cookies.get('highScore2'),
@@ -109,6 +114,7 @@ class Game extends Component<GameProps, GameState> {
   // Fetches and saves assets like player sprites, transitions game to the Ready state on loading.
   fetchAndSaveImages() {
     let pSprite: HTMLImageElement = new Image();
+    let bSprite: HTMLImageElement = new Image();
     pSprite.onload = () => {
       // Called once the sprite at the given source is loaded
       this.setState({
@@ -117,7 +123,13 @@ class Game extends Component<GameProps, GameState> {
       // Ready the game after the player sprite is loaded
       this.transitionPhase(GamePhase.READY);
     }
-    pSprite.src = Trumpetv3;
+    bSprite.onload = () => {
+      this.setState({
+        backgroundSprite: bSprite
+      })
+    }
+    pSprite.src = Trumpet;
+    bSprite.src = Background;
   }
 
   // Called once every time the component is updated externally
@@ -282,11 +294,10 @@ class Game extends Component<GameProps, GameState> {
     if (canvas && ctx) {
       canvas.width = this.props.width;
       canvas.height = this.props.height;
-
-      // Draw a solid blue background
-      ctx.fillStyle = "blue";
-      ctx.beginPath();
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // draw the background
+      if (this.state.backgroundSprite != null) {
+        ctx.drawImage(this.state.backgroundSprite, 0, 0, canvas.width, canvas.height);
+      }
 
       // draw every entity
       this.state.entities.map((e: GameEntity) => {
