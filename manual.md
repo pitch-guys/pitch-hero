@@ -6,7 +6,9 @@
 ## Playing the Game
   Press START and allow microphone access to start the game. The user can set the minimum and maximum pitch values for the game in their respective boxes. Changing the pitch of your voice will move the trumpet up and down, allowing you to navigate through the pipe gaps safely. The game can be paused (via the pause button) or reset (via the reset button) any time should the user need a break. The user can also change the game difficulty by clicking one of the game difficulty buttons (easy, normal, or hard). When the trumpet hits an obstacle, the game terminates and prompts the user to enter a username to represent their high score.
   
-## Reporting a bug
+ ## Reporting a bug
+  If you find a bug with the application, you can report this bug as an issue in the "Issues" tab on our github repository!
+  Please follow the issue template below:
   Title: [relevant name]
   
   Bug description (10 words or less):
