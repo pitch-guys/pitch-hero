@@ -207,8 +207,9 @@ class Game extends Component<GameProps, GameState> {
         // check to make sure the player hasn't died
         player = this.state.player!;  // player is definitely not null
         entities = this.state.entities;
-        if (this.state.entities.some((e: GameEntity) => e.name === "pipe"
-                                                        && (e as PipeEntity).inDangerZone(player.x, player.y))
+        let pipes = this.state.entities.filter(e => e.name === "pipe");
+
+        if (pipes.some((e: GameEntity) => (e as PipeEntity).inDangerZone(player.x, player.y))
               || player.y < 0 || player.y > 100) {
           // there's at least one pipe we're in the danger zone of, we died :(
           this.transitionPhase(GamePhase.DEAD);
@@ -219,11 +220,14 @@ class Game extends Component<GameProps, GameState> {
         }
 
         // check to see how long it's been since we spawned a pipe; if it's been 3 seconds, spawn a new pipe
-        let sinceLastPipe = this.state.sinceLastPipe;
-        if (sinceLastPipe > 3) {
-          // Generate a new pipe past the right edge of the screen with a random height between 20 and 80
+        // let sinceLastPipe = this.state.sinceLastPipe;
+        let lastPipeLoc = 100;
+        if (pipes.length > 0) {
+          lastPipeLoc = (pipes.reduce((a, b) => b["x"] >= a["x"] ? b : a) as PipeEntity).x;
+        }
+        if (pipes.length === 0 || lastPipeLoc < 75){
+          // either there are no pipes or the rightmost pipe is far enough left, spawn a new pipe
           this.state.entities.push(new PipeEntity(EID++, Math.random() * 60 + 20, 5, 20));
-          sinceLastPipe = 0;
         }
 
         // update score for every pipe the player is past the danger zone of and hasn't yet awarded points
@@ -247,7 +251,7 @@ class Game extends Component<GameProps, GameState> {
         this.setState({
           entities: this.state.entities.filter((e: GameEntity) => !e.shouldRemove()),
           nextEID: EID,
-          sinceLastPipe: sinceLastPipe + dt,
+          // sinceLastPipe: sinceLastPipe + dt,
           info: info
         });
         break;
