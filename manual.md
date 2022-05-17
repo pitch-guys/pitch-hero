@@ -37,5 +37,5 @@
   In order to run the test suite for the system, all you you have to do is run "npm test" in the terminal, and Jest will automatically run all of the test files which end with test.tsx.
   When creating new tests, if the tests are for the general app, they can be put as a new test inside of test.tsx.
   
-  Otherwise, if the tests are for a specific implementation, navigate to the __tests__/ folder and create a new folder or add a new test.tsx file.
+  Otherwise, if the tests are for a specific implementation, navigate to the \_\_tests\_\_/ folder and create a new folder or add a new test.tsx file.
   e.g. basic-test.tsx
