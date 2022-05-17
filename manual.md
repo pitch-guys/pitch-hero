@@ -5,9 +5,6 @@
   Pitch Hero is a browser game thus no additional installation is required. The game can be found and run at https://pitch-guys.github.io/pitch-hero/.
 ## Playing the Game
   Press START and allow microphone access to start the game. The user can set the minimum and maximum pitch values for the game in their respective boxes. Changing the pitch of your voice will move the trumpet up and down, allowing you to navigate through the pipe gaps safely. The game can be paused (via the pause button) or reset (via the reset button) any time should the user need a break. The user can also change the game difficulty by clicking one of the game difficulty buttons (easy, normal, or hard). When the trumpet hits an obstacle, the game terminates and prompts the user to enter a username to represent their high score.
-## How to report a bug
-  If you find a bug with the application, you can report this bug as an issue in the "Issues" tab on our github repository!
-  Please follow the issue template below:
   
   Title: [relevant name]
   
@@ -34,9 +31,11 @@
   |   ├── libs/: Common objects<br>
   |   └── types/: Common types<br>
   └── reports/: Weekly status reports<br>
-## Building
-  To build an updated version of all system components, run the command "npm run deploy". This will build an optimized version of the project and then commit this to the github pages where the application is hosted online.
-## Testing
+## Building and releasing the software
+  To build and release an updated version of all system components, run the command "npm run deploy". This will build an optimized version of the project and then commit this to the github pages where the application is hosted online.
+## Testing and creating tests
   In order to run the test suite for the system, all you you have to do is run "npm test" in the terminal, and Jest will automatically run all of the test files which end with test.tsx.
-  In order to create any new tests, either add the new tests to a test.tsx file that already exists, or if creating a test for a new implementation, create a new file, ending in test.tsx, which has all of the new tests in it.
-## Release
+  When creating new tests, if the tests are for the general app, they can be put as a new test inside of test.tsx.
+  
+  Otherwise, if the tests are for a specific implementation, navigate to the __tests__/ folder and create a new folder or add a new test.tsx file.
+  e.g. basic-test.tsx
