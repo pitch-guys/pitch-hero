@@ -25,6 +25,7 @@
   |   └── types/: Common types<br>
   └── reports/: Weekly status reports<br>
 ## Building
+  To build an updated version of all system components, run the command "npm run deploy". This will build an optimized version of the project and then commit this to the github pages where the application is hosted online.
 ## Testing
   In order to run the test suite for the system, all you you have to do is run "npm test" in the terminal, and Jest will automatically run all of the test files which end with test.tsx.
   In order to create any new tests, either add the new tests to a test.tsx file that already exists, or if creating a test for a new implementation, create a new file, ending in test.tsx, which has all of the new tests in it.
