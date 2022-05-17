@@ -7,11 +7,16 @@
   Press START and allow microphone access to start the game. The user can set the minimum and maximum pitch values for the game in their respective boxes. Changing the pitch of your voice will move the trumpet up and down, allowing you to navigate through the pipe gaps safely. The game can be paused (via the pause button) or reset (via the reset button) any time should the user need a break. When the trumpet hits an obstacle and loses, it prompts the user for a username to represent the high score.
 ## How to report a bug
   If you find a bug with the application, you can report this bug as an issue in the "Issues" tab on our github repository!
+  Please follow the issue template below:
+  
+  Title: [relevant name]
+  Bug description (10 words or less):
+  Steps to reproduce:
+  Browser used:
+  
 ## Known bugs
   Some computers might cause malformed pipes to spawn. <br>
   The dialog box to enter a player's initials might not disappear after pressing enter (might need to press multiple times or refresh the app).
-
-  
 
 # Developer Manual
 ## Source Code
