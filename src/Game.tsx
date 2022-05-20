@@ -31,6 +31,9 @@ interface GameState {
 }
 
 class Game extends Component<GameProps, GameState> {
+  static notesArray: string[] = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+  static notesMap = new Map([["C", 0], ["C#", 1], ["D", 2], ["D#", 3], ["E", 4], ["F", 5], ["F#", 6],
+    ["G", 7], ["G#", 8], ["A", 9], ["A#", 10], ["B", 11]]);
   canvas: React.RefObject<HTMLCanvasElement>;
 
   constructor(props: any) {
@@ -210,6 +213,29 @@ class Game extends Component<GameProps, GameState> {
         this.setState({ prePausePhase: GamePhase.INIT });
         break;
     }
+  }
+
+  // Takes note number (in midi scheme such that C4 is note 60) and returns it as a string in
+  // normal musical notation (letter-based with octave number at end). Returns sharps, not flats.
+  // If the given number is not an integer, it is rounded to the nearest note.
+  static pitchLetterFromNumber = (pitch: number) => {
+    const roundedPitch: number = Math.round(pitch);
+    const octave: number = Math.floor((roundedPitch - 12) / 12);  // C0 is note 12, 12 notes in octave
+    const note: string = Game.notesArray[(roundedPitch - 12) % 12];
+    return note + octave;
+  }
+
+  // Takes note in letter form (pitch letter followed by optional # then octave number) and returns
+  // a pitch in midi number form (where C4 is note 60). Accepts sharps, not flats.
+  static pitchNumberFromLetter = (note: string) => {
+    const splitPoint: number = note.search(/-|[0-9]/);
+    const letterNote: string = note.substring(0, splitPoint);
+    const octave: number = parseInt(note.substring(splitPoint, note.length));
+    const letterNoteNumber: number | undefined = Game.notesMap.get(letterNote);
+    if (letterNoteNumber == undefined) {
+      throw "Letter note " + letterNote + " is not defined!";
+    }
+    return octave * 12 + (letterNoteNumber + 12);
   }
 
   // render canvas, called every frame after tickGame
