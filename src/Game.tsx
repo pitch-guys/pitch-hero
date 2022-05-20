@@ -238,6 +238,16 @@ class Game extends Component<GameProps, GameState> {
     return octave * 12 + (letterNoteNumber + 12);
   }
 
+  // Returns the midi pitch number from a frequency in Hz
+  static pitchNumberFromFreq = (freq: number) => {
+    return 12 * Math.log2(4 / 55 * Math.pow(2, 0.75) * freq);
+  }
+
+  // Returns the frequency of a midi pitch
+  static freqFromPitchNumber = (pitch: number) => {
+    return 440 * Math.pow(2, (pitch - 69) / 12);
+  }
+
   // render canvas, called every frame after tickGame
   // note: DON'T do any setState in here
   drawGame = (dt: number) => {
