@@ -108,9 +108,11 @@ class Game extends Component<GameProps, GameState> {
     };
   }
 
+  // Translates received frequency into a pitch, then scales into a position on-screen.
   getInputFunc = () => {
-    let position = (Game.pitchNumberFromFreq(this.props.input) - this.state.loPitch) * 100 / (this.state.hiPitch - this.state.loPitch);
-    if (position > 100) {
+    let position = (Game.pitchNumberFromFreq(this.props.input) - this.state.loPitch) * 100 /
+      (this.state.hiPitch - this.state.loPitch);
+    if (position > 100) {  // keep position within bounds
       position = 100;
     } else if (position < 0) {
       position = 0;
@@ -251,14 +253,22 @@ class Game extends Component<GameProps, GameState> {
     return octave * 12 + (letterNoteNumber + 12);
   }
 
-  // Returns the midi pitch number from a frequency in Hz
+  // Returns the midi pitch number from a frequency in Hz.
   static pitchNumberFromFreq = (freq: number) => {
     return 12 * Math.log2(4 / 55 * Math.pow(2, 0.75) * freq);
   }
 
-  // Returns the frequency of a midi pitch
+  // Returns the frequency of a midi pitch.
   static freqFromPitchNumber = (pitch: number) => {
     return 440 * Math.pow(2, (pitch - 69) / 12);
+  }
+
+  // Generates a random position 0-100 for a pipe to spawn its gap such that the gap lines up
+  // with a note on the grid. Excludes notes at the top and bottom of the range (which do not have
+  // their own grid lines as they are at the edge of the game screen).
+  generateRandomPipeGap = () => {
+    return Math.floor(Math.random() * (this.state.hiPitch - this.state.loPitch - 2) + 1) * 100 /
+      (this.state.hiPitch - this.state.loPitch);
   }
 
   // render canvas, called every frame after tickGame
@@ -276,7 +286,7 @@ class Game extends Component<GameProps, GameState> {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // grid lines
-      const fontSize = 28 - (this.state.hiPitch - this.state.loPitch);
+      const fontSize = 18;
       ctx.strokeStyle = "red";
       ctx.fillStyle = "red";
       ctx.font = fontSize + "px Arial";
