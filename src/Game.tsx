@@ -360,12 +360,7 @@ class Game extends Component<GameProps, GameState> {
         ctx.drawImage(this.state.backgroundSprite, 0, 0, canvas.width, canvas.height);
       }
 
-      // background
-      ctx.fillStyle = "blue";
-      ctx.beginPath();
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // grid lines
+      // draw grid lines
       const fontSize = 18;
       ctx.strokeStyle = "red";
       ctx.fillStyle = "red";
