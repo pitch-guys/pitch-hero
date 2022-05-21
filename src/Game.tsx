@@ -5,6 +5,7 @@ import { GameEntity, PipeEntity, PlayerEntity } from "./GameEntities";
 import { GameInfo, GamePhase } from "./GameTypes";
 import Trumpetv3 from "./Trumpetv3.png";
 import Cookies from "universal-cookie";
+import { convertTypeAcquisitionFromJson } from "typescript";
 // import { Console } from "console";
 
 interface GameProps {
@@ -21,6 +22,8 @@ interface GameState {
   nextEID: number,
   player: PlayerEntity | null
   sinceLastPipe: number,
+  loPitch: number,
+  hiPitch: number,
   info: GameInfo,
   prePausePhase: GamePhase,
   playerSprite: HTMLImageElement | null,
@@ -50,6 +53,8 @@ class Game extends Component<GameProps, GameState> {
       nextEID: 0,
       player: null,
       sinceLastPipe: 0,
+      loPitch: 48,
+      hiPitch: 60,
       info: this.initInfo(),
       prePausePhase: GamePhase.LOAD,
       playerSprite: null,
@@ -103,7 +108,15 @@ class Game extends Component<GameProps, GameState> {
     };
   }
 
-  getInputFunc = () => this.props.input;
+  getInputFunc = () => {
+    let position = (Game.pitchNumberFromFreq(this.props.input) - this.state.loPitch) * 100 / (this.state.hiPitch - this.state.loPitch);
+    if (position > 100) {
+      position = 100;
+    } else if (position < 0) {
+      position = 0;
+    }
+    return position;
+  };
 
   // game startup/reset; run once when game starts up/resets
   initGame = () => {
@@ -232,8 +245,8 @@ class Game extends Component<GameProps, GameState> {
     const letterNote: string = note.substring(0, splitPoint);
     const octave: number = parseInt(note.substring(splitPoint, note.length));
     const letterNoteNumber: number | undefined = Game.notesMap.get(letterNote);
-    if (letterNoteNumber == undefined) {
-      throw "Letter note " + letterNote + " is not defined!";
+    if (letterNoteNumber === undefined) {
+      throw new Error("Letter note " + letterNote + " is not defined!");
     }
     return octave * 12 + (letterNoteNumber + 12);
   }
@@ -261,6 +274,21 @@ class Game extends Component<GameProps, GameState> {
       ctx.fillStyle = "blue";
       ctx.beginPath();
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // grid lines
+      const fontSize = 28 - (this.state.hiPitch - this.state.loPitch);
+      ctx.strokeStyle = "red";
+      ctx.fillStyle = "red";
+      ctx.font = fontSize + "px Arial";
+      for (let i = this.state.loPitch + 1; i < this.state.hiPitch; i++) {
+        let y = (i - this.state.loPitch) * this.props.height / (this.state.hiPitch - this.state.loPitch);
+        y = canvas.height - y;
+        ctx.beginPath();
+        ctx.moveTo(fontSize * 2.2, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+        ctx.fillText(Game.pitchLetterFromNumber(i), 5, y + fontSize / 2);
+      }
 
       this.state.entities.map((e: GameEntity) => {
         e.draw(dt, canvas!, ctx!);

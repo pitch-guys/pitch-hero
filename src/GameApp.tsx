@@ -42,13 +42,13 @@ function GameApp(props: GameAppProps) {
       // let sym = noteStrings[note % 12];
       // let scl = Math.floor(note / 12) - 1;
       // let dtune = centsOffFromPitch(ac, note);
-      // setPitch(ac - 100);
+      setPitch(ac);
       // setPitchNote(sym);
       // setPitchScale(scl);
       // setDetune(dtune);
       // setNotification(false);
       // console.log(note, sym, scl, dtune, ac);
-      updatePosition(ac, loFreq, hiFreq, 100);
+      // updatePosition(ac, loFreq, hiFreq, 100);
     }
   };
 
@@ -166,16 +166,18 @@ function GameApp(props: GameAppProps) {
           </button> 
         )}
         <span>{pitch}</span>
+        <span>{Game.pitchLetterFromNumber(Game.pitchNumberFromFreq(pitch))}</span>
+        {/*
         <span>Minimum Frequency: <input type="number" min={ 0 } value={ loFreq } onChange={ (event) => setLoFreq(event.target.valueAsNumber) }/></span>
         <span>Maximum Frequency: <input type="number" min={ 0 } value={ hiFreq } onChange={ (event) => setHiFreq(event.target.valueAsNumber) }/></span>
+        */}
         <Game 
         width={ canvasWidth }
         height={ canvasHeight }
-        input={ position }
+        input={ pitch }
         requestedPhase={ requestedPhase }
         onPhaseChangeCallback={ onPhaseChanged }
       />
-      <input type="number" min={ 0 } max={ 100 } value={ pitch } onChange={ updatePitch }/>
       <button onClick={ onResetClicked }> {currentPhase === GamePhase.READY ? "Start" : "Reset"} game</button>
       <button onClick={ onPauseClicked }> {currentPhase === GamePhase.PAUSED? "Unpause" : "Pause"} game</button>
     </div>
