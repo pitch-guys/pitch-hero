@@ -38,7 +38,10 @@ export class PlayerEntity extends GameEntity {
   }
 
   tick(dt: number) {
-    this.setY(this.getInputFunc());
+    // this.setY(this.getInputFunc());
+    let target = this.getInputFunc();
+    let dir = (target - this.y) * 0.1 * Math.exp(dt);
+    this.setY(this.y + dir);
   }
 
   draw(dt: number, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
@@ -90,7 +93,7 @@ export class PipeEntity extends GameEntity {
     return this.x < -10;
   }
 
-  inDangerZone(x: number, y: number, canvas: HTMLCanvasElement): boolean {
+  inDangerZone(x: number, y: number): boolean {
     let leftEdge = this.x - this.width / 2;
     let rightEdge = this.x + this.width / 2;
     let topLip = this.y + this.gap / 2;
