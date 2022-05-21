@@ -6,6 +6,7 @@ import { GameInfo, GamePhase } from "./GameTypes";
 import Trumpet from "./Trumpetv3.png";
 import Background from "./Backgroundv4.png";
 import Cookies from "universal-cookie";
+import { convertTypeAcquisitionFromJson } from "typescript";
 // import { Console } from "console";
 
 // Game properties object, contains information passed down from a parent component.
@@ -46,6 +47,10 @@ interface GameState {
   // Time since the last pipe was spawned in seconds
   sinceLastPipe: number,
 
+  // Upper and lower pitch bounds
+  loPitch: number,
+  hiPitch: number,
+
   // Information about the current game like score
   info: GameInfo,
 
@@ -71,6 +76,10 @@ interface GameState {
 // Game component, encapsulating a canvas and performing operations on game entities based on state machine logic.
 // Exposes interfaces for external modification and viewing of game state by other components.
 class Game extends Component<GameProps, GameState> {
+  // Maps for reference converting between letter notes and numbers of the octave
+  static notesArray: string[] = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+  static notesMap = new Map([["C", 0], ["C#", 1], ["D", 2], ["D#", 3], ["E", 4], ["F", 5], ["F#", 6],
+    ["G", 7], ["G#", 8], ["A", 9], ["A#", 10], ["B", 11]]);
 
   // Canvas element reference
   canvas: React.RefObject<HTMLCanvasElement>;
@@ -91,6 +100,8 @@ class Game extends Component<GameProps, GameState> {
       nextEID: 0,
       player: null,
       sinceLastPipe: 0,
+      loPitch: 48,
+      hiPitch: 60,
       info: this.initInfo(),
       prePausePhase: GamePhase.LOAD,
       playerSprite: null,
@@ -163,8 +174,17 @@ class Game extends Component<GameProps, GameState> {
     };
   }
 
-  // Returns the current input value passed in by a parent component
-  getInputFunc = () => this.props.input;
+  // Translates received frequency into a pitch, then scales into a position on-screen.
+  getInputFunc = () => {
+    let position = (Game.pitchNumberFromFreq(this.props.input) - this.state.loPitch) * 100 /
+      (this.state.hiPitch - this.state.loPitch);
+    if (position > 100) {  // keep position within bounds
+      position = 100;
+    } else if (position < 0) {
+      position = 0;
+    }
+    return position;
+  }
 
   // game startup/reset; run once when game starts up/resets
   initGame = () => {
@@ -239,7 +259,7 @@ class Game extends Component<GameProps, GameState> {
         }
         if (pipes.length === 0 || lastPipeLoc < 75){
           // either there are no pipes or the rightmost pipe is far enough left, spawn a new pipe
-          this.state.entities.push(new PipeEntity(EID++, Math.random() * 60 + 20, 5, 20));
+          this.state.entities.push(new PipeEntity(EID++, this.generateRandomPipeGap(), 5, 20));
         }
 
         // update score for every pipe the player is past the danger zone of and hasn't yet awarded points
@@ -284,6 +304,47 @@ class Game extends Component<GameProps, GameState> {
     }
   }
 
+  // Takes note number (in midi scheme such that C4 is note 60) and returns it as a string in
+  // normal musical notation (letter-based with octave number at end). Returns sharps, not flats.
+  // If the given number is not an integer, it is rounded to the nearest note.
+  static pitchLetterFromNumber = (pitch: number) => {
+    const roundedPitch: number = Math.round(pitch);
+    const octave: number = Math.floor((roundedPitch - 12) / 12);  // C0 is note 12, 12 notes in octave
+    const note: string = Game.notesArray[(roundedPitch - 12) % 12];
+    return note + octave;
+  }
+
+  // Takes note in letter form (pitch letter followed by optional # then octave number) and returns
+  // a pitch in midi number form (where C4 is note 60). Accepts sharps, not flats.
+  static pitchNumberFromLetter = (note: string) => {
+    const splitPoint: number = note.search(/-|[0-9]/);
+    const letterNote: string = note.substring(0, splitPoint);
+    const octave: number = parseInt(note.substring(splitPoint, note.length));
+    const letterNoteNumber: number | undefined = Game.notesMap.get(letterNote);
+    if (letterNoteNumber === undefined) {
+      throw new Error("Letter note " + letterNote + " is not defined!");
+    }
+    return octave * 12 + (letterNoteNumber + 12);
+  }
+
+  // Returns the midi pitch number from a frequency in Hz.
+  static pitchNumberFromFreq = (freq: number) => {
+    return 12 * Math.log2(4 / 55 * Math.pow(2, 0.75) * freq);
+  }
+
+  // Returns the frequency of a midi pitch.
+  static freqFromPitchNumber = (pitch: number) => {
+    return 440 * Math.pow(2, (pitch - 69) / 12);
+  }
+
+  // Generates a random position 0-100 for a pipe to spawn its gap such that the gap lines up
+  // with a note on the grid. Excludes notes at the top and bottom of the range (which do not have
+  // their own grid lines as they are at the edge of the game screen).
+  generateRandomPipeGap = () => {
+    return Math.floor(Math.random() * (this.state.hiPitch - this.state.loPitch - 2) + 1) * 100 /
+      (this.state.hiPitch - this.state.loPitch);
+  }
+
   // render canvas, called every frame after tickGame
   // note: DON'T do any setState in here
   drawGame = (dt: number) => {
@@ -297,6 +358,21 @@ class Game extends Component<GameProps, GameState> {
       // draw the background
       if (this.state.backgroundSprite != null) {
         ctx.drawImage(this.state.backgroundSprite, 0, 0, canvas.width, canvas.height);
+      }
+
+      // draw grid lines
+      const fontSize = 18;
+      ctx.strokeStyle = "red";
+      ctx.fillStyle = "red";
+      ctx.font = fontSize + "px Arial";
+      for (let i = this.state.loPitch + 1; i < this.state.hiPitch; i++) {
+        let y = (i - this.state.loPitch) * this.props.height / (this.state.hiPitch - this.state.loPitch);
+        y = canvas.height - y;
+        ctx.beginPath();
+        ctx.moveTo(fontSize * 2.2, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+        ctx.fillText(Game.pitchLetterFromNumber(i), 5, y + fontSize / 2);
       }
 
       // draw every entity
