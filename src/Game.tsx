@@ -259,7 +259,7 @@ class Game extends Component<GameProps, GameState> {
         }
         if (pipes.length === 0 || lastPipeLoc < 75){
           // either there are no pipes or the rightmost pipe is far enough left, spawn a new pipe
-          this.state.entities.push(new PipeEntity(EID++, Math.random() * 60 + 20, 5, 20));
+          this.state.entities.push(new PipeEntity(EID++, this.generateRandomPipeGap(), 5, 20));
         }
 
         // update score for every pipe the player is past the danger zone of and hasn't yet awarded points
