@@ -1,10 +1,10 @@
-import React from "react";
-import { Component } from "react";
+import React, {Component} from "react";
 import GameTimer from "./GameTimer";
-import { GameEntity, PipeEntity, PlayerEntity } from "./GameEntities";
-import { GameInfo, GamePhase } from "./GameTypes";
+import {GameEntity, PipeEntity, PlayerEntity} from "./GameEntities";
+import {GameInfo, GamePhase} from "./GameTypes";
 import Trumpetv3 from "./Trumpetv3.png";
 import Cookies from "universal-cookie";
+
 // import { Console } from "console";
 
 interface GameProps {
@@ -83,6 +83,18 @@ class Game extends Component<GameProps, GameState> {
           // always allow resetting the game
           this.transitionPhase(GamePhase.INIT);
           break;
+        case GamePhase.EASY:
+          // always allow resetting the game
+          this.transitionPhase(GamePhase.EASY);
+          break;
+        case GamePhase.NORMAL:
+          // always allow resetting the game
+          this.transitionPhase(GamePhase.NORMAL);
+          break;
+        case GamePhase.HARD:
+          // always allow resetting the game
+          this.transitionPhase(GamePhase.HARD);
+          break;
         case GamePhase.PAUSED:
           this.setState({ prePausePhase: this.state.phase });
           this.transitionPhase(GamePhase.PAUSED);
@@ -104,7 +116,7 @@ class Game extends Component<GameProps, GameState> {
 
   // game startup/reset; run once when game starts up/resets
   initGame = () => {
-    this.transitionPhase(GamePhase.INIT);
+    this.transitionPhase(GamePhase.NORMAL); //INIT
   }
 
   transitionPhase = (nextPhase: GamePhase) => {
@@ -126,7 +138,7 @@ class Game extends Component<GameProps, GameState> {
         break;
       case GamePhase.READY:
         break;
-      case GamePhase.INIT:
+      case GamePhase.INIT, GamePhase.EASY, GamePhase.NORMAL, GamePhase.HARD:
         // start updating game on the next frame
         player = new PlayerEntity(EID++, this.getInputFunc, this.state.playerSprite);
         entities = [];

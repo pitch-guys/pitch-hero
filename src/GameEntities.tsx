@@ -1,4 +1,4 @@
-import {GameDifficulty} from "./GameTypes";
+import {GamePhase} from "./GameTypes";
 
 export class GameEntity {
   name: string;
@@ -82,13 +82,10 @@ export class PipeEntity extends GameEntity {
     let width = (this.width / 100.0) * canvas.width;
     let gap = (this.gap / 100.0) * canvas.height;
 
-    if (GameDifficulty.EASY) {
-      gap = (this.gap / 100.0) * canvas.height + 50;
-    } else if (GameDifficulty.NORMAL) {
-      gap = (this.gap / 100.0) * canvas.height;
-    } else if (GameDifficulty.HARD) {
-      gap = (this.gap / 100.0) * canvas.height - 21;
-    }
+    if (GamePhase.HARD)
+      gap = (this.gap / 100.0) * canvas.height - 20;
+    if (GamePhase.EASY)
+      gap = (this.gap / 100.0) * canvas.height + 20;
 
     ctx.fillStyle = "green";
 
