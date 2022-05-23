@@ -30,7 +30,17 @@
   |   ├── libs/: Common objects<br>
   |   └── types/: Common types<br>
   └── reports/: Weekly status reports<br>
-## Building and releasing the software
+## Building 
+To contribute to this project, clone the repository.
+
+Then, to build and run the project, run the following commands in the root folder:
+```
+    npm install
+    npm start
+```
+
+This will start the React development server, which hosts the web app.
+##Releasing the software
   To build and release an updated version of all system components, run the command "npm run deploy". This will build an optimized version of the project and then commit this to the github pages where the application is hosted online.
 ## Testing and creating tests
   In order to run the test suite for the system, run "npm test" in the terminal, and Jest will automatically run all of the test files which end with test.tsx.
