@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/pitch-hero/static/css/main.27f725da.css",
-    "main.js": "/pitch-hero/static/js/main.2c4d2ed1.js",
+    "main.js": "/pitch-hero/static/js/main.879bfcee.js",
     "static/js/787.ecb923d3.chunk.js": "/pitch-hero/static/js/787.ecb923d3.chunk.js",
     "index.html": "/pitch-hero/index.html",
     "main.27f725da.css.map": "/pitch-hero/static/css/main.27f725da.css.map",
-    "main.2c4d2ed1.js.map": "/pitch-hero/static/js/main.2c4d2ed1.js.map",
+    "main.879bfcee.js.map": "/pitch-hero/static/js/main.879bfcee.js.map",
     "787.ecb923d3.chunk.js.map": "/pitch-hero/static/js/787.ecb923d3.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.27f725da.css",
-    "static/js/main.2c4d2ed1.js"
+    "static/js/main.879bfcee.js"
   ]
 }
