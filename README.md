@@ -10,6 +10,8 @@ Pitch Hero is a gamified pitch trainer intended to motivate users of all musical
 User is able to sing a certain pitch to control Bibby's height and attempt to survive going between the pipe's gaps. Users can see their score displayed in the corner.
 
 ## User Manual
+### Installing and Running
+  Pitch Hero is a browser game thus no additional installation is required. The game can be found and run at the link above where it says "Play Now".
 ### Playing the Game
   Press START and allow microphone access to start the game. The user can set the minimum and maximum pitch values for the game in their respective boxes. Changing the pitch of your voice will move the trumpet up and down, allowing you to navigate through the pipe gaps safely. The game can be paused (via the pause button) or reset (via the reset button) any time should the user need a break. The user can also change the game difficulty by clicking one of the game difficulty buttons (easy, normal, or hard). When the trumpet hits an obstacle, the game terminates and prompts the user to enter a username to represent their high score.
   
