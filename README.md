@@ -4,14 +4,12 @@
 Click [here](https://pitch-guys.github.io/pitch-hero/)!
 
 ## Project Description
-Pitch Hero is a gamified pitch trainer intended to motivate users of all musical levels to improve their relative pitch sense and singing skills, potentially to achieve perfect or relative pitch. In this web-app game, players must sing the appropriate notes in time in order to evade the obstacles and survive. As they get more practice, they can keep surpassing their previous high scores and even rank themselves globally on the leaderboard.
+Pitch Hero is a gamified pitch trainer intended to motivate users of all musical levels to improve their relative pitch sense and singing skills. The game is played in   the web browser and involves the user singing different pitches to dodge the incoming obstacles. If the player collides with an obstacle, their final score is displayed   and the game ends. Through practice, the player's pitch skills will improve and they can beat their previous high scores, placing them on the leaderboards for everyone     to see!
 
 ## Operational use case
 User is able to sing a certain pitch to control Bibby's height and attempt to survive going between the pipe's gaps. Users can see their score displayed in the corner.
 
 ## User Manual
-### Description
-  Pitch Hero is a gamified pitch trainer intended to motivate users of all musical levels to improve their relative pitch sense and singing skills. The game is played in   the web browser and involves the user singing different pitches to dodge the incoming obstacles. If the player collides with an obstacle, their final score is displayed   and the game ends. Through practice, the player's pitch skills will improve and they can beat their previous high scores, placing them on the leaderboards for everyone     to see!
 ### Installing and running.
   Pitch Hero is a browser game thus no additional installation is required. The game can be found and run at https://pitch-guys.github.io/pitch-hero/.
 ### Playing the Game
