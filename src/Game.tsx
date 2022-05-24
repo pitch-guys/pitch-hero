@@ -9,6 +9,8 @@ import Cookies from "universal-cookie";
 import { convertTypeAcquisitionFromJson } from "typescript";
 // import { Console } from "console";
 
+const MAX_HIGHSCORES = 3;
+
 // Game properties object, contains information passed down from a parent component.
 interface GameProps {
   // Desired canvas width in pixels
@@ -67,9 +69,7 @@ interface GameState {
   cookies: Cookies,
 
   // Top 3 high scores
-  highScore1: string,
-  highScore2: string,
-  highScore3: string
+  highScores: [string, number][]
 }
 
 
@@ -89,9 +89,9 @@ class Game extends Component<GameProps, GameState> {
 
     // Initialize cookies, set initial high scores
     const  cookies: Cookies  = new Cookies();
-    cookies.set("highScore1", "AAA,0", {});
-    cookies.set("highScore2", "AAA,0", {});
-    cookies.set("highScore3", "AAA,0", {});
+    if (!cookies.get("highScores")) {
+      cookies.set("highScores", [], {});
+    }
 
     // Initialize state
     this.state = {
@@ -107,9 +107,7 @@ class Game extends Component<GameProps, GameState> {
       playerSprite: null,
       backgroundSprite: null,
       cookies: cookies,
-      highScore1: cookies.get('highScore1'),
-      highScore2: cookies.get('highScore2'),
-      highScore3: cookies.get('highScore3')
+      highScores: cookies.get("highScores")
     }
 
     // Initialize canvas
@@ -385,46 +383,42 @@ class Game extends Component<GameProps, GameState> {
 
   //called whenever you die and updates high scores if applicable
   handleCookie = (score: number) => {
-    const cookies: Cookies = this.state.cookies
-    const hs1String: string = cookies.get("highScore1");
-    const hs2String: string = cookies.get("highScore2");
-    const hs3String: string = cookies.get("highScore3");
-    const hs1Elem: string[] = hs1String.split(",");
-    const hs2Elem: string[] = hs2String.split(",");
-    const hs3Elem: string[] = hs3String.split(",");
-    const hs1: number = parseFloat(hs1Elem[1]);
-    const hs2: number = parseFloat(hs2Elem[1]);
-    const hs3: number = parseFloat(hs3Elem[1]);
-    if (score > hs3) {
-      // score is at least greater than the lowest high score
-      let resp: string|null = window.prompt("You got a new highscore!! Enter your initials")
-      while (resp === null || resp.length !== 3) {
-        // retry prompting until the player enters a correct name
-        resp = window.prompt("You got a new highscore!! Enter your initials")
-      }
-      const newHighScore: string = resp + "," + score
-      if (score > hs2) {
-        cookies.set("highScore3", hs2String, {});
-        if (score > hs1) {
-          cookies.set("highScore2", hs1String, {});
-          cookies.set("highScore1", newHighScore, {});
-        } else {
-          cookies.set("highScore2", newHighScore, {});
-        }
-      } else {
-        cookies.set("highScore3", newHighScore, {});
+    const cookies: Cookies = this.state.cookies;
+    let scores = cookies.get("highScores", {}) as [string, number][];
+
+    if (scores.length > 0) {
+      let [name, lowest] = scores[scores.length - 1];
+      if (lowest >= score && scores.length >= MAX_HIGHSCORES) {
+        // do nothing since we're lower than the lowest score
+        return;
       }
     }
-    this.setState(
-        {
-          highScore1: cookies.get('highScore1'),
-          highScore2: cookies.get('highScore2'),
-          highScore3: cookies.get('highScore3')
-        }
-    )
+    // there are either no high scores or we're higher than the lowest, make a new entry
+    let name = null;
+    while (!name) {
+      name = window.prompt("You got a new high score! Enter a name:");
+    }
+
+    // add score to the end, then sort all scores from highest to lowest (preserving internal order on ties)
+    scores.push([name, score]);
+    scores = scores.sort((a, b) => b[1] - a[1]);
+
+    // remove lowest scores if we went over the max
+    while (scores.length > MAX_HIGHSCORES) {
+      scores.pop();
+    }
+
+    // update cookies and internal state
+    cookies.set("highScores", scores, {});
+    this.setState({ highScores: scores });
+    // console.log(scores);
   };
 
   render() {
+    const scores = this.state.highScores;
+    const scoreList = scores.map(([name, score]: [string, number]) => {
+      return <p>{name}: {score}</p>
+    });
     return (
       <div className="Game">
         <GameTimer
@@ -433,11 +427,12 @@ class Game extends Component<GameProps, GameState> {
         />
         {/*<p>X position: { this.state.player?.x }</p>*/}
         {/*<p>Y position: { this.state.player?.y }</p>*/}
+        <div>
+          <p>High Scores</p>
+          {scoreList}
+        </div>
         <p>Game Phase: { this.state.phase }</p>
         <p>Score: { this.state.info.score }</p>
-        <p>HighScore1: {this.state.highScore1}</p>
-        <p>HighScore2: {this.state.highScore2}</p>
-        <p>HighScore3: {this.state.highScore3}</p>
         {/*<button onClick={ this.initGame }>Reset game</button>-->*/}
         <canvas className="gameCanvas" ref={ this.canvas }/>
       </div>
