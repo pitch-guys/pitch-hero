@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import GameTimer from "./GameTimer";
 import {GameEntity, PipeEntity, PlayerEntity} from "./GameEntities";
-import {GameInfo, GamePhase} from "./GameTypes";
+import {GameDifficulty, GameInfo, GamePhase} from "./GameTypes";
 import Trumpetv3 from "./Trumpetv3.png";
 import Cookies from "universal-cookie";
 
@@ -13,10 +13,12 @@ interface GameProps {
   input: number,
   requestedPhase: GamePhase | null,    // externally requested state change
   onPhaseChangeCallback?(lastPhase: GamePhase, newPhase: GamePhase, info: GameInfo): void
+  onDiffChangeCallback?(lastDiff: GameDifficulty, newDiff: GameDifficulty, info: GameInfo): void
 }
 
 interface GameState {
   phase: GamePhase,
+  difficulty: GameDifficulty,
   entities: GameEntity[],
   nextEID: number,
   player: PlayerEntity | null
@@ -43,6 +45,7 @@ class Game extends Component<GameProps, GameState> {
 
     this.state = {
       phase: GamePhase.LOAD,
+      difficulty: GameDifficulty.NORMAL,
       entities: [],
       nextEID: 0,
       player: null,
@@ -83,18 +86,6 @@ class Game extends Component<GameProps, GameState> {
           // always allow resetting the game
           this.transitionPhase(GamePhase.INIT);
           break;
-        case GamePhase.EASY:
-          // always allow resetting the game
-          this.transitionPhase(GamePhase.EASY);
-          break;
-        case GamePhase.NORMAL:
-          // always allow resetting the game
-          this.transitionPhase(GamePhase.NORMAL);
-          break;
-        case GamePhase.HARD:
-          // always allow resetting the game
-          this.transitionPhase(GamePhase.HARD);
-          break;
         case GamePhase.PAUSED:
           this.setState({ prePausePhase: this.state.phase });
           this.transitionPhase(GamePhase.PAUSED);
@@ -116,7 +107,8 @@ class Game extends Component<GameProps, GameState> {
 
   // game startup/reset; run once when game starts up/resets
   initGame = () => {
-    this.transitionPhase(GamePhase.NORMAL); //INIT
+    this.transitionPhase(GamePhase.INIT);
+    this.transitionDiff(this.state.difficulty);
   }
 
   transitionPhase = (nextPhase: GamePhase) => {
@@ -124,6 +116,14 @@ class Game extends Component<GameProps, GameState> {
 
     this.setState({ phase: nextPhase }, () => {
       this.props.onPhaseChangeCallback?.(lastPhase, this.state.phase, this.state.info)
+    });
+  }
+
+  transitionDiff = (nextDiff: GameDifficulty) => {
+    let lastDiff = this.state.difficulty;
+
+    this.setState({ difficulty: nextDiff }, () => {
+      this.props.onDiffChangeCallback?.(lastDiff, this.state.difficulty, this.state.info)
     });
   }
 
@@ -138,7 +138,7 @@ class Game extends Component<GameProps, GameState> {
         break;
       case GamePhase.READY:
         break;
-      case GamePhase.INIT, GamePhase.EASY, GamePhase.NORMAL, GamePhase.HARD:
+      case GamePhase.INIT:
         // start updating game on the next frame
         player = new PlayerEntity(EID++, this.getInputFunc, this.state.playerSprite);
         entities = [];
@@ -239,7 +239,8 @@ class Game extends Component<GameProps, GameState> {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       this.state.entities.map((e: GameEntity) => {
-        e.draw(dt, canvas!, ctx!);
+        // e.draw(dt, canvas!, ctx!);
+        e.draw(dt, canvas!, ctx!, this.state.difficulty);
         return e;
       });
     }

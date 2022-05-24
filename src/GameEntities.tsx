@@ -1,4 +1,5 @@
-import {GamePhase} from "./GameTypes";
+import {GameDifficulty} from "./GameTypes";
+import Game from "./Game";
 
 export class GameEntity {
   name: string;
@@ -24,7 +25,7 @@ export class GameEntity {
 
   tick(dt: number) { }
 
-  draw(dt: number, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) { }
+  draw(dt: number, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, diff: GameDifficulty) { }
 
   shouldRemove(): boolean { return false; }
 }
@@ -75,18 +76,18 @@ export class PipeEntity extends GameEntity {
     this.setX(this.x - dt * 10);
   }
 
-  draw(dt: number, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+  draw(dt: number, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, diff: GameDifficulty) {
     // canvas space from game space
     let x = (this.x / 100.0) * canvas.width;
     let y = (1 - this.y / 100.0) * canvas.height;
     let width = (this.width / 100.0) * canvas.width;
     let gap = (this.gap / 100.0) * canvas.height;
-
-    if (GamePhase.HARD)
+    if (diff == GameDifficulty.HARD) {
       gap = (this.gap / 100.0) * canvas.height - 20;
-    if (GamePhase.EASY)
+    }
+    if (diff == GameDifficulty.EASY) {
       gap = (this.gap / 100.0) * canvas.height + 20;
-
+    }
     ctx.fillStyle = "green";
 
     // top

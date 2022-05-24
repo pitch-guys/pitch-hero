@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import "./Game.css";
 import Game from "./Game";
-import {GameInfo, GamePhase} from './GameTypes';
+import {GameDifficulty, GameInfo, GamePhase} from './GameTypes';
 import AudioContextFunction from "./contexts/AudioContext";
 import autoCorrelate from "./libs/AutoCorrelate";
 // import { maxHeaderSize } from 'http';
@@ -21,7 +21,7 @@ function GameApp(props: GameAppProps) {
   const [manualMode, setManualMode] = useState(false);
   const [loFreq, setLoFreq] = useState(100);
   const [hiFreq, setHiFreq] = useState(400);
-  const [currentPhase, setCurrentPhase] = useState(GamePhase.NORMAL);
+  const [currentPhase, setCurrentPhase] = useState(GamePhase.INIT);
   // const [pauseInfo, setPauseInfo] = useState<{paused: boolean, previous: GamePhase}>({ paused: false, previous: GamePhase.INIT});
   const [requestedPhase, setRequestedPhase] = useState<GamePhase | null>(null);
   const [source, setSource] = useState<any|null>(null);
@@ -33,6 +33,7 @@ function GameApp(props: GameAppProps) {
   // const onInputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   setGameInput(parseInt(e.target.value));
   // }
+  const [difficulty, setDifficulty] = useState(GameDifficulty.NORMAL);
 
   const updatePitch = (time: any) => {
     analyserNode.getFloatTimeDomainData(buf);
@@ -122,16 +123,7 @@ function GameApp(props: GameAppProps) {
     setCurrentPhase(newPhase);
 
     switch (newPhase) {
-      // case GamePhase.INIT:
-      //   props.onInit?.();
-      //   break;
-      case GamePhase.EASY:
-        props.onInit?.();
-        break;
-      case GamePhase.NORMAL:
-        props.onInit?.();
-        break;
-      case GamePhase.HARD:
+      case GamePhase.INIT:
         props.onInit?.();
         break;
       case GamePhase.ALIVE:
@@ -146,7 +138,7 @@ function GameApp(props: GameAppProps) {
   }
 
   const onResetClicked = () => {
-    setRequestedPhase(GamePhase.NORMAL);
+    setRequestedPhase(GamePhase.INIT);
   }
 
   const onPauseClicked = () => {
@@ -158,13 +150,16 @@ function GameApp(props: GameAppProps) {
   }
 
   const onEasyClicked = () => {
-    setRequestedPhase(GamePhase.EASY);
+    setDifficulty(GameDifficulty.EASY);
+    setRequestedPhase(GamePhase.INIT);
   }
   const onNormalClicked = () => {
-    setRequestedPhase(GamePhase.NORMAL);
+    setDifficulty(GameDifficulty.NORMAL);
+    setRequestedPhase(GamePhase.INIT);
   }
   const onHardClicked = () => {
-    setRequestedPhase(GamePhase.HARD);
+    setDifficulty(GameDifficulty.HARD);
+    setRequestedPhase(GamePhase.INIT);
   }
 
   useEffect(() => {
