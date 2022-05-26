@@ -112,6 +112,7 @@ function GameApp(props: GameAppProps) {
     });
   };
 
+  // Game calls this when phase changes
   const onPhaseChanged = (lastPhase: GamePhase, newPhase: GamePhase, info: GameInfo) => {
     console.log(`Transitioned from ${lastPhase} to ${newPhase}`);
 
@@ -202,6 +203,7 @@ function GameApp(props: GameAppProps) {
             height={ canvasHeight }
             input={ position }
             requestedPhase={ requestedPhase }
+            requestedDifficulty={ difficulty}
             onPhaseChangeCallback={ onPhaseChanged }
         />
         <input type="number" min={ 0 } max={ 100 } value={ position } onChange={ onUpdateManualInput }/>

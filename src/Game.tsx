@@ -12,6 +12,7 @@ interface GameProps {
   height: number,
   input: number,
   requestedPhase: GamePhase | null,    // externally requested state change
+  requestedDifficulty: GameDifficulty
   onPhaseChangeCallback?(lastPhase: GamePhase, newPhase: GamePhase, info: GameInfo): void
   onDiffChangeCallback?(lastDiff: GameDifficulty, newDiff: GameDifficulty, info: GameInfo): void
 }
@@ -95,6 +96,10 @@ class Game extends Component<GameProps, GameState> {
           break;
       }
     }
+    if (this.props.requestedDifficulty !== this.state.difficulty) {
+      this.transitionDiff(this.props.requestedDifficulty);
+    }
+
   }
 
   initInfo = () => {
@@ -177,8 +182,15 @@ class Game extends Component<GameProps, GameState> {
 
         // check to see how long it's been since we spawned a pipe; if it's been 3 seconds, spawn a new pipe
         let sinceLastPipe = this.state.sinceLastPipe;
+        let gap = 20; // default difficulty is NORMAL
+        if (this.state.difficulty == GameDifficulty.HARD) {
+          gap = 10;
+        }
+        if (this.state.difficulty == GameDifficulty.EASY) {
+          gap = 30;
+        }
         if (sinceLastPipe > 3) {
-          this.state.entities.push(new PipeEntity(EID++, Math.random() * 60 + 20, 5, 20));
+          this.state.entities.push(new PipeEntity(EID++, Math.random() * 60 + 20, 5, gap));
           sinceLastPipe = 0;
         }
 

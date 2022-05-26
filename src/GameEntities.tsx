@@ -82,12 +82,6 @@ export class PipeEntity extends GameEntity {
     let y = (1 - this.y / 100.0) * canvas.height;
     let width = (this.width / 100.0) * canvas.width;
     let gap = (this.gap / 100.0) * canvas.height;
-    if (diff == GameDifficulty.HARD) {
-      gap = (this.gap / 100.0) * canvas.height - 20;
-    }
-    if (diff == GameDifficulty.EASY) {
-      gap = (this.gap / 100.0) * canvas.height + 20;
-    }
     ctx.fillStyle = "green";
 
     // top
