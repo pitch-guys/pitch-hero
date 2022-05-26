@@ -19,8 +19,14 @@ interface GameProps {
   // Desired canvas height in pixels
   height: number,
 
-  // Desired player height, between 0 and 100
+  // Input frequency used to determine player height
   input: number,
+
+  // Desired minimum note on the grid as a string, updates state on game reset if valid
+  loNote: string,
+
+  // Desired minimum note on the grid as a string, updates state on game reset if valid
+  hiNote: string,
 
   // Desired game phase to transition to, externally requested and possibly not acted upon
   requestedPhase: GamePhase | null,
@@ -215,6 +221,31 @@ class Game extends Component<GameProps, GameState> {
       case GamePhase.INIT:
         // initialize the game
         // set up entities to contain a new player
+
+        // Ensure we have valid input for pitch range, and if so, update state accordingly
+        let loPitchNumber: number;
+        try {
+          loPitchNumber = Game.pitchNumberFromLetter(this.props.loNote);
+        } catch {
+          window.alert('Invalid low note: "' + this.props.loNote + '"');
+          this.transitionPhase(GamePhase.READY);
+          break;
+        }
+        let hiPitchNumber: number;
+        try {
+          hiPitchNumber = Game.pitchNumberFromLetter(this.props.hiNote);
+        } catch {
+          window.alert('Invalid high note: "' + this.props.hiNote + '"');
+          this.transitionPhase(GamePhase.READY);
+          break;
+        }
+        if (loPitchNumber >= hiPitchNumber) {
+          window.alert('Given low note "' + this.props.loNote + '" is not less than given high note "' + this.props.hiNote + '"');
+          this.transitionPhase(GamePhase.READY);
+          break;
+        }
+        this.setState({loPitch: loPitchNumber, hiPitch: hiPitchNumber});
+
         player = new PlayerEntity(EID++, this.getInputFunc, this.state.playerSprite);
         entities = [];
         entities.push(player);

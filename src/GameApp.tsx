@@ -22,6 +22,8 @@ function GameApp(props: GameAppProps) {
   const [manualMode, setManualMode] = useState(false);
   const [loFreq, setLoFreq] = useState(100);
   const [hiFreq, setHiFreq] = useState(400);
+  const [loNote, setLoNote] = useState("C3");
+  const [hiNote, setHiNote] = useState("C4");
   const [currentPhase, setCurrentPhase] = useState(GamePhase.INIT);
   // const [pauseInfo, setPauseInfo] = useState<{paused: boolean, previous: GamePhase}>({ paused: false, previous: GamePhase.INIT});
   const [requestedPhase, setRequestedPhase] = useState<GamePhase | null>(null);
@@ -225,14 +227,14 @@ function GameApp(props: GameAppProps) {
         )}
         <span>{pitch}</span>
         <span>{Game.pitchLetterFromNumber(Game.pitchNumberFromFreq(pitch))}</span>
-        {/*
-        <span>Minimum Frequency: <input type="number" min={ 0 } value={ loFreq } onChange={ (event) => setLoFreq(event.target.valueAsNumber) }/></span>
-        <span>Maximum Frequency: <input type="number" min={ 0 } value={ hiFreq } onChange={ (event) => setHiFreq(event.target.valueAsNumber) }/></span>
-        */}
+        <span>Highest Note: <input type="text" value={ hiNote } onChange={ (event) => setHiNote(event.target.value) }/></span>
+        <span>Lowest Note: <input type="text" value={ loNote } onChange={ (event) => setLoNote(event.target.value) }/></span>
         <Game
         width={ canvasWidth }
         height={ canvasHeight }
         input={ pitch }
+        loNote = { loNote }
+        hiNote = { hiNote }
         requestedPhase={ requestedPhase }
         onPhaseChangeCallback={ onPhaseChanged }
       />
