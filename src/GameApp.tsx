@@ -14,6 +14,7 @@ interface GameAppProps {
 }
 
 function GameApp(props: GameAppProps) {
+  const [data, newData] = useState<String|null>(null);
   const [canvasWidth, setCanvasWidth] = useState(window.innerWidth * 0.8);
   const [canvasHeight, setCanvasHeight] = useState(250);
   const [pitch, setPitch] = useState(50);
@@ -137,11 +138,33 @@ function GameApp(props: GameAppProps) {
 
   const onResetClicked = () => {
     setRequestedPhase(GamePhase.INIT);
-  }
+    const url = 'https://homes.cs.washington.edu/~pjonany/highScores.php';
+    const data = {
+      name: "testdude",
+      score: "6"
+    }
+    const params:any = {
+      headers: {"content-type":"application/json; charset =UTF-8"},
+      body: JSON.stringify(data),
+      mode:"no-cors",
+      method:"POST"
+    }
+    fetch(url, params)
+    .then((data) => {
+        console.log(JSON.stringify(data));
+    }).then((res) => {
+        console.log(res)
+    }).catch((error) => {
+        console.log(error)
+    })
+
+ 
+}
 
   const onPauseClicked = () => {
     if (currentPhase !== GamePhase.PAUSED) {
       setRequestedPhase(GamePhase.PAUSED);
+      
     } else {
       setRequestedPhase(GamePhase.UNPAUSED);
     }
@@ -162,10 +185,31 @@ function GameApp(props: GameAppProps) {
     }
   }, [source, analyserNode]);
 
+  useEffect(() => {
+    // var url = 'https://homes.cs.washington.edu/~pjonany/highScores.php';
+    // const request = new XMLHttpRequest();
+    // try {
+    //   request.open('GET', url);
+    //   request.responseType = 'json';
+    //   request.addEventListener('load', () => console.log(request.response));
+    //   request.addEventListener('error', () => console.error('XHR error'));
+    //   request.send();
+    // } catch(error) {
+    //   console.error(`XHR error ${request.status}`);
+    // }
+
+  });
+
   return (
-    
     <div className="Game-App">
+      <form action = "https://homes.cs.washington.edu/~pjonany/highScores.php" method = "POST">
+         Name: <input type = "text" name = "name" />
+         Score: <input type = "text" name = "score" />
+         <input type = "submit" />
+      </form>
+      {data ? data : 'No data yet...'}
       {!started ? (
+          
           <button
             onClick={start}
           >
@@ -206,7 +250,7 @@ function GameApp(props: GameAppProps) {
       <button onClick={ onResetClicked }> {currentPhase === GamePhase.READY ? "Start" : "Reset"} game</button>
       <button onClick={ onPauseClicked }> {currentPhase === GamePhase.PAUSED? "Unpause" : "Pause"} game</button>
     </div>
-  );
+  ); 
 }
 
 export default GameApp;
