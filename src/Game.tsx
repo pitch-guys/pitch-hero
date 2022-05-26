@@ -235,12 +235,14 @@ class Game extends Component<GameProps, GameState> {
         try {
           hiPitchNumber = Game.pitchNumberFromLetter(this.props.hiNote);
         } catch {
-          window.alert('Invalid high note: "' + this.props.loNote + '"');
+          window.alert('Invalid high note: "' + this.props.hiNote + '"');
           this.transitionPhase(GamePhase.READY);
           break;
         }
         if (loPitchNumber >= hiPitchNumber) {
           window.alert('Given low note "' + this.props.loNote + '" is not less than given high note "' + this.props.hiNote + '"');
+          this.transitionPhase(GamePhase.READY);
+          break;
         }
         this.setState({loPitch: loPitchNumber, hiPitch: hiPitchNumber});
 
