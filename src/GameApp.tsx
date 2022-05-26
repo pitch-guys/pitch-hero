@@ -204,7 +204,7 @@ function GameApp(props: GameAppProps) {
 
   return (
     <div className="Game-App">
-      <form action = "https://homes.cs.washington.edu/~pjonany/highScores.php" method = "POST">
+      <form target = "_blank" action = "https://homes.cs.washington.edu/~pjonany/highScores.php" method = "POST">
          Name: <input type = "text" name = "name" />
          Score: <input type = "text" name = "score" />
          <input type = "submit" />
