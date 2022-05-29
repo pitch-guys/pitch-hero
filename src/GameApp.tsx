@@ -30,7 +30,7 @@ function GameApp(props: GameAppProps) {
   const [started, setStart] = useState(false);
   const audioCtx = AudioContext.getAudioContext();
   const analyserNode = AudioContext.getAnalyser();
-  const buflen = 2048;
+  const buflen = 1024;
   var buf = new Float32Array(buflen);
   // const onInputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   setGameInput(parseInt(e.target.value));
