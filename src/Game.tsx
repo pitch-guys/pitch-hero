@@ -462,7 +462,7 @@ class Game extends Component<GameProps, GameState> {
           <p>High Scores</p>
           {scoreList}
         </div>
-        <p>Game Phase: { this.state.phase }</p>
+        {/*<p>Game Phase: { this.state.phase }</p>*/}
         <p>Score: { this.state.info.score }</p>
         {/*<button onClick={ this.initGame }>Reset game</button>-->*/}
         <canvas className="gameCanvas" ref={ this.canvas }/>

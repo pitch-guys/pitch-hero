@@ -181,8 +181,8 @@ function GameApp(props: GameAppProps) {
             Stop microphone
           </button> 
         )}
-        <span>{pitch}</span>
-        <span>{Game.pitchLetterFromNumber(Game.pitchNumberFromFreq(pitch))}</span>
+        {/*<span>{pitch}</span>*/}
+        {/*<span>{Game.pitchLetterFromNumber(Game.pitchNumberFromFreq(pitch))}</span>*/}
         <span>Highest Note: <input type="text" value={ hiNote } onChange={ (event) => setHiNote(event.target.value) }/></span>
         <span>Lowest Note: <input type="text" value={ loNote } onChange={ (event) => setLoNote(event.target.value) }/></span>
         <Game
