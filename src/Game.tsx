@@ -119,8 +119,8 @@ class Game extends Component<GameProps, GameState> {
       nextEID: 0,
       player: null,
       sinceLastPipe: 0,
-      loPitch: 48,
-      hiPitch: 60,
+      loPitch: 47,
+      hiPitch: 61,
       info: this.initInfo(),
       prePausePhase: GamePhase.LOAD,
       playerSprite: null,
@@ -266,11 +266,11 @@ class Game extends Component<GameProps, GameState> {
           break;
         }
         if (loPitchNumber >= hiPitchNumber) {
-          window.alert('Given low note "' + this.props.loNote + '" is not less than given high note "' + this.props.hiNote + '"');
+          window.alert('Given low note "' + this.props.loNote + '" is not lower than given high note "' + this.props.hiNote + '"');
           this.transitionPhase(GamePhase.READY);
           break;
         }
-        this.setState({loPitch: loPitchNumber, hiPitch: hiPitchNumber});
+        this.setState({loPitch: loPitchNumber - 1, hiPitch: hiPitchNumber + 1});
 
         player = new PlayerEntity(EID++, this.getInputFunc, this.state.playerSprite);
         entities = [];
