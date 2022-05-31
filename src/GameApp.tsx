@@ -222,9 +222,11 @@ function GameApp(props: GameAppProps) {
       */}
       <button onClick={ onResetClicked }> {currentPhase === GamePhase.READY ? "Start" : "Reset"} game</button>
       <button onClick={ onPauseClicked }> {currentPhase === GamePhase.PAUSED? "Unpause" : "Pause"} game</button>
-      <button onClick={ onEasyClicked }>Easy</button>
-      <button onClick={ onNormalClicked }>Normal</button>
-      <button onClick={ onHardClicked }>Hard</button>
+      <div>
+        <button onClick={ onEasyClicked }>Easy</button>
+        <button onClick={ onNormalClicked }>Normal</button>
+        <button onClick={ onHardClicked }>Hard</button>
+      </div>
     </div>
   );
 }
