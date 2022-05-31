@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import "./Game.css";
 import Game from "./Game";
-import { GameInfo, GamePhase } from './GameTypes';
+import { GameDifficulty, GameInfo, GamePhase } from './GameTypes';
 import AudioContextFunction from "./contexts/AudioContext";
 import autoCorrelate from "./libs/AutoCorrelate";
 // import { maxHeaderSize } from 'http';
@@ -35,6 +35,7 @@ function GameApp(props: GameAppProps) {
   // const onInputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   setGameInput(parseInt(e.target.value));
   // }
+  const [difficulty, setDifficulty] = useState(GameDifficulty.NORMAL);
 
   const updatePitch = (time: any) => {
     analyserNode.getFloatTimeDomainData(buf);
@@ -149,6 +150,19 @@ function GameApp(props: GameAppProps) {
     }
   }
 
+  const onEasyClicked = () => {
+    setDifficulty(GameDifficulty.EASY);
+    setRequestedPhase(GamePhase.INIT);
+  }
+  const onNormalClicked = () => {
+    setDifficulty(GameDifficulty.NORMAL);
+    setRequestedPhase(GamePhase.INIT);
+  }
+  const onHardClicked = () => {
+    setDifficulty(GameDifficulty.HARD);
+    setRequestedPhase(GamePhase.INIT);
+  }
+
   useEffect(() => {
     const handleResize = () => {
       setCanvasHeight(250);
@@ -192,6 +206,7 @@ function GameApp(props: GameAppProps) {
         loNote = { loNote }
         hiNote = { hiNote }
         requestedPhase={ requestedPhase }
+        requestedDifficulty={ difficulty }
         onPhaseChangeCallback={ onPhaseChanged }
       />
       {/*
@@ -207,6 +222,9 @@ function GameApp(props: GameAppProps) {
       */}
       <button onClick={ onResetClicked }> {currentPhase === GamePhase.READY ? "Start" : "Reset"} game</button>
       <button onClick={ onPauseClicked }> {currentPhase === GamePhase.PAUSED? "Unpause" : "Pause"} game</button>
+      <button onClick={ onEasyClicked }>Easy</button>
+      <button onClick={ onNormalClicked }>Normal</button>
+      <button onClick={ onHardClicked }>Hard</button>
     </div>
   );
 }

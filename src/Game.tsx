@@ -2,7 +2,7 @@ import React from "react";
 import { Component } from "react";
 import GameTimer from "./GameTimer";
 import { GameEntity, PipeEntity, PlayerEntity } from "./GameEntities";
-import { GameInfo, GamePhase } from "./GameTypes";
+import { GameDifficulty, GameInfo, GamePhase } from "./GameTypes";
 import Trumpet from "./Trumpetv3.png";
 import Background from "./Backgroundv4.png";
 import Cookies from "universal-cookie";
@@ -31,17 +31,29 @@ interface GameProps {
   // Desired game phase to transition to, externally requested and possibly not acted upon
   requestedPhase: GamePhase | null,
 
+  // Desired game difficulty to transition to
+  requestedDifficulty: GameDifficulty,
+
   // Callback invoked on changing game phase
   // lastPhase: Phase before change
   // newPhase: Phase after change
   // info: Information about externally-relevant game state like score
   onPhaseChangeCallback?(lastPhase: GamePhase, newPhase: GamePhase, info: GameInfo): void
+
+  // Callback invoked on changing game difficulty
+  // lastDiff: Difficulty before change
+  // newDiff: Difficulty after change
+  // info: Information about externally-relevant game state like score
+  onDiffChangeCallback?(lastDiff: GameDifficulty, newDiff: GameDifficulty, info: GameInfo): void
 }
 
 // Game state object, representing current game state
 interface GameState {
   // Current game phase
   phase: GamePhase,
+
+  // Current game difficulty
+  difficulty: GameDifficulty,
 
   // List of all entities to be updated
   entities: GameEntity[],
@@ -102,6 +114,7 @@ class Game extends Component<GameProps, GameState> {
     // Initialize state
     this.state = {
       phase: GamePhase.LOAD,
+      difficulty: GameDifficulty.NORMAL,
       entities: [],
       nextEID: 0,
       player: null,
@@ -169,6 +182,9 @@ class Game extends Component<GameProps, GameState> {
           break;
       }
     }
+    if (this.props.requestedDifficulty !== this.state.difficulty) {
+      this.transitionDiff(this.props.requestedDifficulty);
+    }
   }
 
   // Returns an initialized GameInfo object
@@ -193,6 +209,7 @@ class Game extends Component<GameProps, GameState> {
   // game startup/reset; run once when game starts up/resets
   initGame = () => {
     this.transitionPhase(GamePhase.INIT);
+    this.transitionDiff(this.state.difficulty);
   }
 
   // Transitions the current phase to the next phase, invoking the onPhaseChange callback
@@ -201,6 +218,15 @@ class Game extends Component<GameProps, GameState> {
 
     this.setState({ phase: nextPhase }, () => {
       this.props.onPhaseChangeCallback?.(lastPhase, this.state.phase, this.state.info)
+    });
+  }
+
+  // Transitions the current difficulty to the next difficulty, invoking the onDiffChange callback
+  transitionDiff = (nextDiff: GameDifficulty) => {
+    let lastDiff = this.state.difficulty;
+
+    this.setState({ difficulty: nextDiff }, () => {
+      this.props.onDiffChangeCallback?.(lastDiff, this.state.difficulty, this.state.info)
     });
   }
 
@@ -286,10 +312,19 @@ class Game extends Component<GameProps, GameState> {
         if (pipes.length > 0) {
           lastPipeLoc = (pipes.reduce((a, b) => b["x"] >= a["x"] ? b : a) as PipeEntity).x;
         }
+        // size of the gap, varies based on difficulty
+        let gap = 20; // default difficulty is NORMAL
+        if (this.state.difficulty == GameDifficulty.HARD) {
+          gap = 10;
+        }
+        if (this.state.difficulty == GameDifficulty.EASY) {
+          gap = 30;
+        }
         if (pipes.length === 0 || lastPipeLoc < 75){
           // either there are no pipes or the rightmost pipe is far enough left, spawn a new pipe
-          this.state.entities.push(new PipeEntity(EID++, this.generateRandomPipeGap(), 5, 20));
+          this.state.entities.push(new PipeEntity(EID++, this.generateRandomPipeGap(), 5, gap));
         }
+
 
         // update score for every pipe the player is past the danger zone of and hasn't yet awarded points
         let info = this.state.info;

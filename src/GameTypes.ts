@@ -8,6 +8,12 @@ export enum GamePhase {
   UNPAUSED = "UNPAUSED"
 };
 
+export enum GameDifficulty {
+  EASY = "EASY",
+  NORMAL = "NORMAL",
+  HARD = "HARD"
+}
+
 export interface GameInfo {
   score: number
   // eventually, we can add more things to keep track of here
